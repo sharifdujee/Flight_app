@@ -37,6 +37,12 @@ class AirportController extends GetxController {
     super.onClose();
   }
 
+  static const tips = [
+    (Icons.swap_vert_rounded, 'Tap the swap icon to quickly reverse routes'),
+    (Icons.search_rounded, 'Search airports by name, city, or IATA code'),
+    (Icons.bolt_rounded, 'Fastest tab finds the quickest travel option'),
+  ];
+
   // ── API ────────────────────────────────────────────────────────────────────
   Future<void> fetchAirports() async {
     isLoading.value = true;

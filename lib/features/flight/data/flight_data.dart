@@ -43,6 +43,13 @@ class FlightResult {
   final String airlineLogo;
   final bool isBestFlight;
 
+  /// Mock CO2 estimate in kg for the whole trip (used by the result card UI).
+  final int carbonEmissionKg;
+
+  /// Percent difference vs a "typical" emissions baseline for the route.
+  /// Negative = below typical (greener), positive = above typical.
+  final int emissionsPercentDiff;
+
   FlightResult({
     required this.flights,
     required this.layovers,
@@ -51,6 +58,8 @@ class FlightResult {
     required this.type,
     required this.airlineLogo,
     this.isBestFlight = false,
+    this.carbonEmissionKg = 0,
+    this.emissionsPercentDiff = 0,
   });
 
   factory FlightResult.fromJson(Map<String, dynamic> json,
@@ -67,6 +76,8 @@ class FlightResult {
       type: json['type'] ?? 'One way',
       airlineLogo: json['airline_logo'] ?? '',
       isBestFlight: isBest,
+      carbonEmissionKg: json['carbon_emission_kg'] ?? 0,
+      emissionsPercentDiff: json['emissions_percent_diff'] ?? 0,
     );
   }
 
@@ -113,6 +124,9 @@ class FlightResult {
   /// Human-readable arrival time "HH:mm"
   String get arrivalTimeFormatted => _formatTime(arrivalTime);
 
+  /// Date label for card headers, e.g. "Thu, Jun 18"
+  String get dateLabel => _formatDateLabel(departureTime);
+
   /// Check if flight goes overnight (arrives next day)
   bool get isOvernight {
     if (flights.isEmpty) return false;
@@ -124,6 +138,24 @@ class FlightResult {
     final parts = dateTime.split(' ');
     if (parts.length < 2) return dateTime;
     return parts[1];
+  }
+
+  String _formatDateLabel(String dateTime) {
+    if (dateTime.isEmpty) return '';
+    try {
+      final iso = dateTime.contains('T') ? dateTime : dateTime.replaceFirst(' ', 'T');
+      final dt = DateTime.parse(iso);
+      const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      const months = [
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      ];
+      final wd = weekdays[dt.weekday - 1];
+      final mo = months[dt.month - 1];
+      return '$wd, $mo ${dt.day}';
+    } catch (_) {
+      return '';
+    }
   }
 }
 

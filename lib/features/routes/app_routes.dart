@@ -10,7 +10,7 @@ class AppRoutes {
   static final List<GetPage> pages = [
 
     GetPage(name: init, page: ()=>SplashScreen()),
-    GetPage(name: home, page: ()=>HomeScreen()),
+    GetPage(name: home, page: ()=>AirportScreen()),
   ]
   ;
 }

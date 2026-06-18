@@ -34,4 +34,13 @@ class AppColors {
   // Airline accent colors
   static const bestBadge = Color(0xFF0F9D58);
   static const bestBadgeLight = Color(0xFFE6F4EA);
+
+  /// search result card color
+
+
+  static const accentBlue    = Color(0xFF8AB4F8);
+  static const emissionsBg   = Color(0xFF1B3A2C);
+  static const emissionsText = Color(0xFF81C995);
+  static const bestAccent    = Color(0xFFFBBC04);
+  static const logoBg        = Color(0xFFFFFFFF);
 }
