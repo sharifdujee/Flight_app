@@ -6,22 +6,60 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import '../data/flight_data.dart';
 
-
-
 enum FlightFilter { all, fastest }
 
 // ─── Airline catalogue used for mock route generation ────────────────────────
 const _airlines = [
-  _AirlineInfo('Emirates',        'EK', 'https://www.gstatic.com/flights/airline_logos/70px/EK.png'),
-  _AirlineInfo('Qatar Airways',   'QR', 'https://www.gstatic.com/flights/airline_logos/70px/QR.png'),
-  _AirlineInfo('flydubai',        'FZ', 'https://www.gstatic.com/flights/airline_logos/70px/FZ.png'),
-  _AirlineInfo('Turkish Airlines','TK', 'https://www.gstatic.com/flights/airline_logos/70px/TK.png'),
-  _AirlineInfo('Lufthansa',       'LH', 'https://www.gstatic.com/flights/airline_logos/70px/LH.png'),
-  _AirlineInfo('British Airways', 'BA', 'https://www.gstatic.com/flights/airline_logos/70px/BA.png'),
-  _AirlineInfo('Singapore Airlines','SQ','https://www.gstatic.com/flights/airline_logos/70px/SQ.png'),
-  _AirlineInfo('Air France',      'AF', 'https://www.gstatic.com/flights/airline_logos/70px/AF.png'),
-  _AirlineInfo('KLM',             'KL', 'https://www.gstatic.com/flights/airline_logos/70px/KL.png'),
-  _AirlineInfo('Etihad Airways',  'EY', 'https://www.gstatic.com/flights/airline_logos/70px/EY.png'),
+  _AirlineInfo(
+    'Emirates',
+    'EK',
+    'https://www.gstatic.com/flights/airline_logos/70px/EK.png',
+  ),
+  _AirlineInfo(
+    'Qatar Airways',
+    'QR',
+    'https://www.gstatic.com/flights/airline_logos/70px/QR.png',
+  ),
+  _AirlineInfo(
+    'flydubai',
+    'FZ',
+    'https://www.gstatic.com/flights/airline_logos/70px/FZ.png',
+  ),
+  _AirlineInfo(
+    'Turkish Airlines',
+    'TK',
+    'https://www.gstatic.com/flights/airline_logos/70px/TK.png',
+  ),
+  _AirlineInfo(
+    'Lufthansa',
+    'LH',
+    'https://www.gstatic.com/flights/airline_logos/70px/LH.png',
+  ),
+  _AirlineInfo(
+    'British Airways',
+    'BA',
+    'https://www.gstatic.com/flights/airline_logos/70px/BA.png',
+  ),
+  _AirlineInfo(
+    'Singapore Airlines',
+    'SQ',
+    'https://www.gstatic.com/flights/airline_logos/70px/SQ.png',
+  ),
+  _AirlineInfo(
+    'Air France',
+    'AF',
+    'https://www.gstatic.com/flights/airline_logos/70px/AF.png',
+  ),
+  _AirlineInfo(
+    'KLM',
+    'KL',
+    'https://www.gstatic.com/flights/airline_logos/70px/KL.png',
+  ),
+  _AirlineInfo(
+    'Etihad Airways',
+    'EY',
+    'https://www.gstatic.com/flights/airline_logos/70px/EY.png',
+  ),
 ];
 
 class _AirlineInfo {
@@ -46,20 +84,17 @@ const _hubs = [
 ];
 
 class FlightController extends GetxController {
-  // ── Observable state ───────────────────────────────────────────────────────
-  final isLoading        = false.obs;
-  final hasError         = false.obs;
-  final errorMessage     = ''.obs;
-  final hasSearched      = false.obs;
+  final isLoading = false.obs;
+  final hasError = false.obs;
+  final errorMessage = ''.obs;
+  final hasSearched = false.obs;
   final activeFilterIndex = 0.obs;
 
-  final RxList<FlightResult>  bestFlights      = <FlightResult>[].obs;
-  final RxList<FlightResult>  otherFlights     = <FlightResult>[].obs;
-  final RxList<FlightResult>  displayedFlights = <FlightResult>[].obs;
-  final Rx<PriceInsights?>    priceInsights    = Rx<PriceInsights?>(null);
+  final RxList<FlightResult> bestFlights = <FlightResult>[].obs;
+  final RxList<FlightResult> otherFlights = <FlightResult>[].obs;
+  final RxList<FlightResult> displayedFlights = <FlightResult>[].obs;
+  final Rx<PriceInsights?> priceInsights = Rx<PriceInsights?>(null);
 
-  // ── Raw API debug log (shown in UI) ───────────────────────────────────────
-  // Each entry: { 'ts': '11:54:03', 'label': '...', 'body': '...' }
   final RxList<Map<String, String>> apiLogs = <Map<String, String>>[].obs;
 
   FlightFilter get activeFilter => FlightFilter.values[activeFilterIndex.value];
@@ -92,8 +127,8 @@ class FlightController extends GetxController {
     _lastDep = departure;
     _lastArr = arrival;
 
-    isLoading.value   = true;
-    hasError.value    = false;
+    isLoading.value = true;
+    hasError.value = false;
     hasSearched.value = false;
     apiLogs.clear();
 
@@ -114,7 +149,7 @@ class FlightController extends GetxController {
         final decoded = json.decode(rawResponse) as Map<String, dynamic>;
 
         // Log structure summary
-        final bestCount  = (decoded['best_flights']  as List?)?.length ?? 0;
+        final bestCount = (decoded['best_flights'] as List?)?.length ?? 0;
         final otherCount = (decoded['other_flights'] as List?)?.length ?? 0;
         _addLog(
           'PARSED',
@@ -128,12 +163,10 @@ class FlightController extends GetxController {
 
         final parsed = FlightSearchResponse.fromJson(decoded);
 
-        // Generate realistic flights FOR THE ACTUAL SELECTED ROUTE
-        // using the mock API's structure/prices as a seed.
         final generated = _generateFlightsForRoute(
           departure: departure,
-          arrival:   arrival,
-          seed:      parsed,
+          arrival: arrival,
+          seed: parsed,
         );
 
         _addLog(
@@ -151,7 +184,9 @@ class FlightController extends GetxController {
         activeFilterIndex.value = 0;
         hasSearched.value = true;
 
-        log('✅ Flights ready: best=${bestFlights.length}, other=${otherFlights.length}');
+        log(
+          '✅ Flights ready: best=${bestFlights.length}, other=${otherFlights.length}',
+        );
       } else {
         final msg = 'Server error ${response.statusCode}';
         _addLog('ERROR', msg);
@@ -167,13 +202,8 @@ class FlightController extends GetxController {
     }
   }
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // FLIGHT GENERATION FOR ROUTE
-  // Uses the mock API's prices / durations as seeds, but replaces all
-  // airport codes, airline assignments, and flight numbers so the displayed
-  // data is consistent with the user-selected route.
-  // ─────────────────────────────────────────────────────────────────────────
-  ({List<FlightResult> best, List<FlightResult> other}) _generateFlightsForRoute({
+  ({List<FlightResult> best, List<FlightResult> other})
+  _generateFlightsForRoute({
     required String departure,
     required String arrival,
     required FlightSearchResponse seed,
@@ -181,55 +211,53 @@ class FlightController extends GetxController {
     final rng = math.Random(departure.hashCode ^ arrival.hashCode);
 
     // Pick airlines seeded by route so the same route always shows same airlines
-    final shuffledAirlines = List<_AirlineInfo>.from(_airlines)
-      ..shuffle(rng);
+    final shuffledAirlines = List<_AirlineInfo>.from(_airlines)..shuffle(rng);
 
     // Pick hub airports (exclude dep/arr themselves)
-    final availableHubs = _hubs
-        .where((h) => h.$1 != departure && h.$1 != arrival)
-        .toList()
-      ..shuffle(rng);
+    final availableHubs =
+        _hubs.where((h) => h.$1 != departure && h.$1 != arrival).toList()
+          ..shuffle(rng);
 
     List<FlightResult> buildBatch(List<FlightResult> source, bool isBest) {
       return source.asMap().entries.map((entry) {
-        final i       = entry.key;
+        final i = entry.key;
         final seedFlt = entry.value;
         final airline = shuffledAirlines[i % shuffledAirlines.length];
         final isNonstop = seedFlt.flights.length == 1;
 
         if (isNonstop) {
           return _buildNonstop(
-            dep:      departure,
-            arr:      arrival,
-            airline:  airline,
+            dep: departure,
+            arr: arrival,
+            airline: airline,
             flightNo: '${airline.code} ${100 + rng.nextInt(900)}',
-            depTime:  seedFlt.departureTime,
-            arrTime:  seedFlt.arrivalTime,
+            depTime: seedFlt.departureTime,
+            arrTime: seedFlt.arrivalTime,
             duration: seedFlt.totalDuration,
-            price:    seedFlt.price,
-            isBest:   isBest,
+            price: seedFlt.price,
+            isBest: isBest,
           );
         } else {
           // 1-stop: use a hub airport
           final hub = availableHubs[i % availableHubs.length];
           return _buildOneStop(
-            dep:      departure,
-            arr:      arrival,
-            hub:      hub,
-            airline:  airline,
+            dep: departure,
+            arr: arrival,
+            hub: hub,
+            airline: airline,
             flightNoA: '${airline.code} ${100 + rng.nextInt(900)}',
             flightNoB: '${airline.code} ${100 + rng.nextInt(900)}',
-            seedFlt:  seedFlt,
-            price:    seedFlt.price,
-            isBest:   isBest,
+            seedFlt: seedFlt,
+            price: seedFlt.price,
+            isBest: isBest,
           );
         }
       }).toList();
     }
 
     return (
-    best:  buildBatch(seed.bestFlights,  true),
-    other: buildBatch(seed.otherFlights, false),
+      best: buildBatch(seed.bestFlights, true),
+      other: buildBatch(seed.otherFlights, false),
     );
   }
 
@@ -246,27 +274,27 @@ class FlightController extends GetxController {
   }) {
     final segment = FlightSegment(
       departureAirport: FlightAirport(name: dep, id: dep, time: depTime),
-      arrivalAirport:   FlightAirport(name: arr, id: arr, time: arrTime),
-      duration:         duration,
-      airplane:         'Boeing 737',
-      airline:          airline.name,
-      airlineLogo:      airline.logo,
-      travelClass:      'Economy',
-      flightNumber:     flightNo,
-      legroom:          '30 in',
-      extensions:       ['Average legroom (30 in)', 'On-demand video'],
-      overnight:        false,
+      arrivalAirport: FlightAirport(name: arr, id: arr, time: arrTime),
+      duration: duration,
+      airplane: 'Boeing 737',
+      airline: airline.name,
+      airlineLogo: airline.logo,
+      travelClass: 'Economy',
+      flightNumber: flightNo,
+      legroom: '30 in',
+      extensions: ['Average legroom (30 in)', 'On-demand video'],
+      overnight: false,
     );
     final emissions = _estimateEmissionsKg(duration, 0);
     return FlightResult(
-      flights:              [segment],
-      layovers:             [],
-      totalDuration:        duration,
-      price:                price,
-      type:                 'One way',
-      airlineLogo:          airline.logo,
-      isBestFlight:         isBest,
-      carbonEmissionKg:     emissions,
+      flights: [segment],
+      layovers: [],
+      totalDuration: duration,
+      price: price,
+      type: 'One way',
+      airlineLogo: airline.logo,
+      isBestFlight: isBest,
+      carbonEmissionKg: emissions,
       emissionsPercentDiff: _estimateEmissionsDiffPercent(emissions, duration),
     );
   }
@@ -283,58 +311,63 @@ class FlightController extends GetxController {
     required bool isBest,
   }) {
     // Split total duration roughly 60/40 between leg A and leg B
-    final legA   = (seedFlt.totalDuration * 0.45).round();
-    final layMin = seedFlt.layovers.isNotEmpty ? seedFlt.layovers.first.duration : 90;
-    final legB   = seedFlt.totalDuration - legA - layMin;
+    final legA = (seedFlt.totalDuration * 0.45).round();
+    final layMin = seedFlt.layovers.isNotEmpty
+        ? seedFlt.layovers.first.duration
+        : 90;
+    final legB = seedFlt.totalDuration - legA - layMin;
 
     // Parse departure time from seedFlt and compute arrival times
-    final depTime    = seedFlt.departureTime;  // e.g. "2026-06-18 08:10"
+    final depTime = seedFlt.departureTime; // e.g. "2026-06-18 08:10"
     final hubArrTime = _addMinutes(depTime, legA);
     final hubDepTime = _addMinutes(hubArrTime, layMin);
-    final finalArr   = _addMinutes(hubDepTime, legB);
+    final finalArr = _addMinutes(hubDepTime, legB);
 
     final segA = FlightSegment(
-      departureAirport: FlightAirport(name: dep,    id: dep,    time: depTime),
-      arrivalAirport:   FlightAirport(name: hub.$2, id: hub.$1, time: hubArrTime),
-      duration:         legA,
-      airplane:         'Boeing 777',
-      airline:          airline.name,
-      airlineLogo:      airline.logo,
-      travelClass:      'Economy',
-      flightNumber:     flightNoA,
-      legroom:          '31 in',
-      extensions:       ['Average legroom (31 in)', 'In-seat power & USB outlets'],
-      overnight:        false,
+      departureAirport: FlightAirport(name: dep, id: dep, time: depTime),
+      arrivalAirport: FlightAirport(name: hub.$2, id: hub.$1, time: hubArrTime),
+      duration: legA,
+      airplane: 'Boeing 777',
+      airline: airline.name,
+      airlineLogo: airline.logo,
+      travelClass: 'Economy',
+      flightNumber: flightNoA,
+      legroom: '31 in',
+      extensions: ['Average legroom (31 in)', 'In-seat power & USB outlets'],
+      overnight: false,
     );
     final segB = FlightSegment(
-      departureAirport: FlightAirport(name: hub.$2, id: hub.$1, time: hubDepTime),
-      arrivalAirport:   FlightAirport(name: arr,    id: arr,    time: finalArr),
-      duration:         legB,
-      airplane:         'Airbus A320',
-      airline:          airline.name,
-      airlineLogo:      airline.logo,
-      travelClass:      'Economy',
-      flightNumber:     flightNoB,
-      legroom:          '30 in',
-      extensions:       ['Average legroom (30 in)', 'On-demand video'],
-      overnight:        false,
+      departureAirport: FlightAirport(
+        name: hub.$2,
+        id: hub.$1,
+        time: hubDepTime,
+      ),
+      arrivalAirport: FlightAirport(name: arr, id: arr, time: finalArr),
+      duration: legB,
+      airplane: 'Airbus A320',
+      airline: airline.name,
+      airlineLogo: airline.logo,
+      travelClass: 'Economy',
+      flightNumber: flightNoB,
+      legroom: '30 in',
+      extensions: ['Average legroom (30 in)', 'On-demand video'],
+      overnight: false,
     );
-    final layover = Layover(
-      duration: layMin,
-      name:     hub.$2,
-      id:       hub.$1,
-    );
+    final layover = Layover(duration: layMin, name: hub.$2, id: hub.$1);
     final emissions = _estimateEmissionsKg(seedFlt.totalDuration, 1);
     return FlightResult(
-      flights:              [segA, segB],
-      layovers:             [layover],
-      totalDuration:        seedFlt.totalDuration,
-      price:                price,
-      type:                 'One way',
-      airlineLogo:          airline.logo,
-      isBestFlight:         isBest,
-      carbonEmissionKg:     emissions,
-      emissionsPercentDiff: _estimateEmissionsDiffPercent(emissions, seedFlt.totalDuration),
+      flights: [segA, segB],
+      layovers: [layover],
+      totalDuration: seedFlt.totalDuration,
+      price: price,
+      type: 'One way',
+      airlineLogo: airline.logo,
+      isBestFlight: isBest,
+      carbonEmissionKg: emissions,
+      emissionsPercentDiff: _estimateEmissionsDiffPercent(
+        emissions,
+        seedFlt.totalDuration,
+      ),
     );
   }
 
@@ -353,11 +386,10 @@ class FlightController extends GetxController {
         displayedFlights.assignAll(all);
         break;
 
-
-        break;
       case FlightFilter.fastest:
         displayedFlights.assignAll(
-          List<FlightResult>.from(all)..sort((a, b) => a.totalDuration.compareTo(b.totalDuration)),
+          List<FlightResult>.from(all)
+            ..sort((a, b) => a.totalDuration.compareTo(b.totalDuration)),
         );
         break;
     }
@@ -367,8 +399,8 @@ class FlightController extends GetxController {
     bestFlights.clear();
     otherFlights.clear();
     displayedFlights.clear();
-    hasSearched.value       = false;
-    hasError.value          = false;
+    hasSearched.value = false;
+    hasError.value = false;
     activeFilterIndex.value = 0;
     apiLogs.clear();
   }
@@ -377,13 +409,14 @@ class FlightController extends GetxController {
   // HELPERS
   // ─────────────────────────────────────────────────────────────────────────
   void _setError(String msg) {
-    hasError.value    = true;
+    hasError.value = true;
     errorMessage.value = msg;
   }
 
   void _addLog(String label, String body) {
     final now = DateTime.now();
-    final ts  = '${now.hour.toString().padLeft(2, '0')}:'
+    final ts =
+        '${now.hour.toString().padLeft(2, '0')}:'
         '${now.minute.toString().padLeft(2, '0')}:'
         '${now.second.toString().padLeft(2, '0')}';
     apiLogs.add({'ts': ts, 'label': label, 'body': body});
@@ -416,9 +449,9 @@ class FlightController extends GetxController {
       final timeParts = parts[1].split(':');
       final h = int.parse(timeParts[0]);
       final m = int.parse(timeParts[1]);
-      final total  = h * 60 + m + minutes;
-      final newH   = (total ~/ 60) % 24;
-      final newM   = total % 60;
+      final total = h * 60 + m + minutes;
+      final newH = (total ~/ 60) % 24;
+      final newM = total % 60;
       return '${parts[0]} ${newH.toString().padLeft(2, '0')}:${newM.toString().padLeft(2, '0')}';
     } catch (_) {
       return dateTime;

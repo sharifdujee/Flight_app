@@ -21,59 +21,98 @@ class AirportScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: AppColors.primary,
-        elevation: 0,
-        title: Row(
-          children: [
-            Icon(Icons.flight_rounded, color: Colors.white, size: 22.sp),
-            Gap(8.w),
-            CustomText(
-              text: 'SkySearch',
+      body: CustomScrollView(
+        slivers: [
+          // ── Hero AppBar ────────────────────────────────────────────────────
+          SliverAppBar(
+            expandedHeight: 140.h,
+            floating: false,
+            pinned: true,
+            backgroundColor: AppColors.primary,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xFF1565C0),
+                      Color(0xFF1A73E8),
+                      Color(0xFF42A5F5),
+                    ],
+                  ),
+                ),
+                child: SafeArea(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(20.w, 8.h, 20.w, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.flight_rounded,
+                              color: Colors.white,
+                              size: 22.sp,
+                            ),
+                            Gap(8.w),
+                            CustomText(
+                             text:  'SkySearch',
 
-              fontSize: 20.sp,
-              fontWeight: FontWeight.w800,
-              color: Colors.white,
-              letterSpacing: -0.5,
-            ),
-          ],
-        ),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(28.h),
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 10.h),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: CustomText(
-                text: 'Where would you like to fly?',
+                                fontSize: 20.sp,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white,
+                                letterSpacing: -0.5,
 
-                fontSize: 14.sp,
-                color: Colors.white.withValues(alpha: 0.85),
+                            ),
+                          ],
+                        ),
+                        Gap(8.h),
+                        CustomText(
+                         text:  'Where would you like to fly?',
+
+                            fontSize: 14.sp,
+                            color: Colors.white.withValues(alpha: 0.85),
+
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SelectorCard(airportCtrl: airportCtrl, flightCtrl: flightCtrl),
-            Gap(20.h),
-            CustomText(
-              text: 'Tips',
+          // ── Body ───────────────────────────────────────────────────────────
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.all(16.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // ── Selector Card ────────────────────────────────────────
+                  SelectorCard(
+                    airportCtrl: airportCtrl,
+                    flightCtrl: flightCtrl,
+                  ),
+                  Gap(20.h),
+                  // ── Quick Tips ───────────────────────────────────────────
+                  CustomText(text:
+                    'Tips',
 
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary,
+
+                  ),
+                  Gap(10.h),
+                  ...AirportController.tips.map(
+                    (t) => TipsRow(icon: t.$1, text: t.$2),
+                  ),
+                ],
+              ),
             ),
-            Gap(10.h),
-            ...AirportController.tips.map(
-              (t) => TipsRow(icon: t.$1, text: t.$2),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -33,7 +33,7 @@ class AirportController extends GetxController {
   @override
   void onClose() {
     searchController.removeListener(_onSearchChanged);
-    searchController.dispose();
+    searchController.clear();
     super.onClose();
   }
 

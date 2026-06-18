@@ -44,14 +44,14 @@ class AirportListSection extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8.r),
               ),
               alignment: Alignment.center,
-              child: Text(
-                airport.code,
-                style: TextStyle(
+              child: CustomText(
+               text:  airport.code,
+
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w800,
                   color: isSelected ? Colors.white : AppColors.primary,
                   letterSpacing: 0.5,
-                ),
+
               ),
             ),
             Gap(12.w),
@@ -59,13 +59,13 @@ class AirportListSection extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    airport.airportName,
-                    style: TextStyle(
+                  CustomText(
+                   text:  airport.airportName,
+
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textPrimary,
-                    ),
+
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),

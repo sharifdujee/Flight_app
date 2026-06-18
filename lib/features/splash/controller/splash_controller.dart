@@ -12,7 +12,7 @@ class SplashController extends GetxController {
   }
 
   void navigateNext(){
-    Future.delayed(const Duration(milliseconds: 500),(){
+    Future.delayed(const Duration(seconds: 30),(){
       Get.offAllNamed(AppRoutes.home);
     });
 

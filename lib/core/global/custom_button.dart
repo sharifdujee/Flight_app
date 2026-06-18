@@ -94,7 +94,7 @@ class _CustomButtonState extends State<CustomButton>
                   alpha: 0.5,
                 )
               : widget.outlineColor ?? AppColors.primary)
-        : (isDisabled ? widget.textColor.withOpacity(0.5) : widget.textColor);
+        : (isDisabled ? widget.textColor.withValues(alpha: 0.5) : widget.textColor);
 
     return GestureDetector(
       onTap: widget.onPressed,
@@ -122,34 +122,32 @@ class _CustomButtonState extends State<CustomButton>
             child: widget.isCircle
                 ? Center(child: widget.image)
                 : Center(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        if (widget.prefixIcon != null) ...[
-                          Icon(
-                            widget.prefixIcon,
-                            size: 20.sp,
-                            color: textColor,
-                          ),
-                          SizedBox(width: 8.w),
-                        ],
-                        Expanded(
-                          child: Text(
-                            widget.text,
-                            textAlign: TextAlign.center,
-                            style:
-                                widget.textStyle ??
-                                GoogleFonts.poppins(
-                                  decoration: TextDecoration.none,
-                                  color: textColor,
-                                  fontSize: 16.spMin,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                          ),
-                        ),
-                      ],
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (widget.prefixIcon != null) ...[
+                    Icon(
+                      widget.prefixIcon,
+                      size: 20.sp,
+                      color: AppColors.primaryLight,
                     ),
+                    SizedBox(width: 8.w),
+                  ],
+                  Text(                          // ← removed Expanded wrapper
+                    widget.text,
+                    textAlign: TextAlign.center,
+                    style:
+                    widget.textStyle ??
+                        GoogleFonts.poppins(
+                          decoration: TextDecoration.none,
+                          color: textColor,
+                          fontSize: 16.spMin,
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                ],
+              ),
                   ),
           ),
         ),
