@@ -40,7 +40,7 @@ class AirportListSection extends StatelessWidget {
               width: 52.w,
               padding: EdgeInsets.symmetric(vertical: 7.h),
               decoration: BoxDecoration(
-                color: isSelected ? AppColors.primary : const Color(0xFFF0F4FF),
+                color: isSelected ? AppColors.primary : AppColors.primaryLight,
                 borderRadius: BorderRadius.circular(8.r),
               ),
               alignment: Alignment.center,
@@ -49,7 +49,7 @@ class AirportListSection extends StatelessWidget {
 
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w800,
-                  color: isSelected ? Colors.white : AppColors.primary,
+                  color: isSelected ? AppColors.primaryLight : AppColors.primary,
                   letterSpacing: 0.5,
 
               ),

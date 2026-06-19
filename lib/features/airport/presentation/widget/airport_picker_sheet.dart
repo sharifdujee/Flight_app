@@ -1,21 +1,25 @@
+
+import 'package:flight_app/core/global/custom_loading.dart';
+import 'package:flight_app/core/global/custom_text.dart';
+import 'package:flight_app/core/global/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
-
 import '../../../../core/constants/app_colors.dart';
 import '../../controller/airport_controller.dart';
+import 'airport_error_view.dart';
 import 'airport_list_section.dart';
+import 'empty_airport_view.dart';
 
 class AirportPickerSheet extends StatelessWidget {
-  const AirportPickerSheet({super.key, required this.isDeparture});
+  AirportPickerSheet({super.key, required this.isDeparture});
 
   final bool isDeparture;
+  final AirportController airportController = Get.find<AirportController>();
 
   @override
   Widget build(BuildContext context) {
-    final ctrl = Get.find<AirportController>();
-
     return DraggableScrollableSheet(
       initialChildSize: 0.9,
       minChildSize: 0.5,
@@ -23,7 +27,7 @@ class AirportPickerSheet extends StatelessWidget {
       builder: (_, scrollController) {
         return Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.primaryLight,
             borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
           ),
           child: Column(
@@ -34,33 +38,33 @@ class AirportPickerSheet extends StatelessWidget {
                 width: 40.w,
                 height: 4.h,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: AppColors.textSecondary,
                   borderRadius: BorderRadius.circular(2.r),
                 ),
               ),
               Gap(14.h),
               // Header
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 16.w),
                 child: Row(
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          isDeparture ? 'Departure Airport' : 'Arrival Airport',
-                          style: TextStyle(
-                            fontSize: 17.sp,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.textPrimary,
-                          ),
+                        CustomText(
+                          text: isDeparture
+                              ? 'Departure Airport'
+                              : 'Arrival Airport',
+
+                          fontSize: 17.sp,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary,
                         ),
-                        Text(
-                          'Search or scroll to select',
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            color: AppColors.textSecondary,
-                          ),
+                        CustomText(
+                          text: 'Search or scroll to select',
+
+                          fontSize: 12.sp,
+                          color: AppColors.textSecondary,
                         ),
                       ],
                     ),
@@ -69,11 +73,15 @@ class AirportPickerSheet extends StatelessWidget {
                       onTap: () => Get.back(),
                       child: Container(
                         padding: const EdgeInsets.all(8),
-                        decoration: const BoxDecoration(
-                          color: Color(0xFFF5F5F5),
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryLight,
                           shape: BoxShape.circle,
                         ),
-                        child: Icon(Icons.close, size: 18.sp, color: AppColors.textSecondary),
+                        child: Icon(
+                          Icons.close,
+                          size: 18.sp,
+                          color: AppColors.textSecondary,
+                        ),
                       ),
                     ),
                   ],
@@ -81,94 +89,77 @@ class AirportPickerSheet extends StatelessWidget {
               ),
               Gap(14.h),
               // Search bar
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: TextField(
-                  controller: ctrl.searchController,
-                  autofocus: true,
-                  style: TextStyle(fontSize: 14.sp, color: AppColors.textPrimary),
-                  decoration: InputDecoration(
-                    hintText: 'Search airport name or IATA code…',
-                    hintStyle: TextStyle(fontSize: 13.sp, color: AppColors.textHint),
-                    prefixIcon: Icon(
-                      Icons.search_rounded,
-                      size: 20.sp,
-                      color: AppColors.textSecondary,
-                    ),
-                    suffixIcon: Obx(() => ctrl.searchText.value.isNotEmpty
-                        ? GestureDetector(
-                      onTap: ctrl.clearSearch,
-                      child: Icon(Icons.close, size: 18.sp, color: AppColors.textHint),
-                    )
-                        : const SizedBox.shrink()),
-                    filled: true,
-                    fillColor: const Color(0xFFF5F5F5),
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 14.w,
-                      vertical: 12.h,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 16.w),
+                child: CustomTextFormField(
+                  containerColor: AppColors.primary,
+                  hintTextColor: AppColors.primaryLight,
+                  prefixIcon: Icon(Icons.search),
+                  controller: airportController.searchController,
+                  hintText: "Search airport name or IATA code",
                 ),
               ),
               Gap(10.h),
               // Results count
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: Obx(() => Row(
-                  children: [
-                    Icon(Icons.location_on_rounded, size: 13.sp, color: AppColors.textHint),
-                    Gap(4.w),
-                    Text(
-                      '${ctrl.filteredAirports.length} airports',
-                      style: TextStyle(fontSize: 12.sp, color: AppColors.textSecondary),
-                    ),
-                  ],
-                )),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Obx(
+                  () => Row(
+                    children: [
+                      Icon(
+                        Icons.location_on_rounded,
+                        size: 13.sp,
+                        color: AppColors.textHint,
+                      ),
+                      Gap(4.w),
+                      CustomText(
+                        text:
+                            '${airportController.filteredAirports.length} airports',
+
+                        fontSize: 12.sp,
+                        color: AppColors.textSecondary,
+                      ),
+                    ],
+                  ),
+                ),
               ),
               Gap(6.h),
               const Divider(height: 1, thickness: 1, color: AppColors.divider),
-              // List
+
               Expanded(
                 child: Obx(() {
-                  if (ctrl.isLoading.value) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        color: AppColors.primary,
-                        strokeWidth: 2,
-                      ),
+                  if (airportController.isLoading.value) {
+                    return Center(
+                      child: CustomLoading(color: AppColors.primary),
                     );
                   }
-                  if (ctrl.hasError.value) {
-                    return _ErrorView(
-                      message: ctrl.errorMessage.value,
-                      onRetry: ctrl.getAirPortList,
+                  if (airportController.hasError.value) {
+                    return AirportErrorView(
+                      message: airportController.errorMessage.value,
+                      onRetry: airportController.getAirPortList,
                     );
                   }
-                  if (ctrl.filteredAirports.isEmpty) {
-                    return const _EmptyState();
+                  if (airportController.filteredAirports.isEmpty) {
+                    return const EmptyAirport();
                   }
                   return ListView.builder(
                     controller: scrollController,
-                    itemCount: ctrl.filteredAirports.length,
+                    itemCount: airportController.filteredAirports.length,
                     itemBuilder: (_, i) {
-                      final airport = ctrl.filteredAirports[i];
+                      final airport = airportController.filteredAirports[i];
                       final selected = isDeparture
-                          ? ctrl.departureAirport.value?.code == airport.code
-                          : ctrl.arrivalAirport.value?.code == airport.code;
+                          ? airportController.departureAirport.value?.code ==
+                                airport.code
+                          : airportController.arrivalAirport.value?.code ==
+                                airport.code;
                       return AirportListSection(
                         airport: airport,
                         isSelected: selected,
                         onTap: () {
-                          // single, guarded call — controller ignores
-                          // re-entrant taps via _isSelecting flag
                           if (isDeparture) {
-                            ctrl.selectAsDeparture(airport);
+                            airportController.selectAsDeparture(airport);
                           } else {
-                            ctrl.selectAsArrival(airport);
+                            airportController.selectAsArrival(airport);
                           }
                         },
                       );
@@ -184,77 +175,4 @@ class AirportPickerSheet extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Empty / Error States
-// ─────────────────────────────────────────────────────────────────────────────
-class _EmptyState extends StatelessWidget {
-  const _EmptyState();
 
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.search_off_rounded, size: 52.sp, color: Colors.grey[300]),
-          Gap(12.h),
-          Text(
-            'No airports found',
-            style: TextStyle(
-              fontSize: 15.sp,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textSecondary,
-            ),
-          ),
-          Gap(4.h),
-          Text(
-            'Try a different name or IATA code',
-            style: TextStyle(fontSize: 12.sp, color: AppColors.textHint),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ErrorView extends StatelessWidget {
-  const _ErrorView({required this.message, required this.onRetry});
-  final String message;
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(24.w),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.wifi_off_rounded, size: 52.sp, color: Colors.grey[300]),
-            Gap(12.h),
-            Text(
-              'Could not load airports',
-              style: TextStyle(
-                fontSize: 15.sp,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textSecondary,
-              ),
-            ),
-            Gap(6.h),
-            Text(
-              message,
-              style: TextStyle(fontSize: 12.sp, color: AppColors.textHint),
-              textAlign: TextAlign.center,
-            ),
-            Gap(20.h),
-            ElevatedButton.icon(
-              onPressed: onRetry,
-              icon: Icon(Icons.refresh_rounded, size: 18.sp),
-              label: Text('Retry', style: TextStyle(fontSize: 13.sp)),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

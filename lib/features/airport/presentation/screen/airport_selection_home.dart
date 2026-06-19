@@ -31,20 +31,20 @@ class AirportScreen extends StatelessWidget {
             backgroundColor: AppColors.primary,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Color(0xFF1565C0),
-                      Color(0xFF1A73E8),
-                      Color(0xFF42A5F5),
+                      AppColors.airportOne,
+                      AppColors.primary,
+                      AppColors.airportTwo,
                     ],
                   ),
                 ),
                 child: SafeArea(
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(20.w, 8.h, 20.w, 0),
+                  child: Container(
+                    margin: EdgeInsets.fromLTRB(20.w, 8.h, 20.w, 0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -57,23 +57,21 @@ class AirportScreen extends StatelessWidget {
                             ),
                             Gap(8.w),
                             CustomText(
-                             text:  'SkySearch',
+                              text: 'SkySearch',
 
-                                fontSize: 20.sp,
-                                fontWeight: FontWeight.w800,
-                                color: Colors.white,
-                                letterSpacing: -0.5,
-
+                              fontSize: 20.sp,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                              letterSpacing: -0.5,
                             ),
                           ],
                         ),
                         Gap(8.h),
                         CustomText(
-                         text:  'Where would you like to fly?',
+                          text: 'Where would you like to fly?',
 
-                            fontSize: 14.sp,
-                            color: Colors.white.withValues(alpha: 0.85),
-
+                          fontSize: 14.sp,
+                          color: Colors.white.withValues(alpha: 0.85),
                         ),
                       ],
                     ),
@@ -84,8 +82,8 @@ class AirportScreen extends StatelessWidget {
           ),
           // ── Body ───────────────────────────────────────────────────────────
           SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.all(16.w),
+            child: Container(
+              margin: EdgeInsets.all(16.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -96,13 +94,12 @@ class AirportScreen extends StatelessWidget {
                   ),
                   Gap(20.h),
                   // ── Quick Tips ───────────────────────────────────────────
-                  CustomText(text:
-                    'Tips',
+                  CustomText(
+                    text: 'Tips',
 
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
-
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
                   ),
                   Gap(10.h),
                   ...AirportController.tips.map(

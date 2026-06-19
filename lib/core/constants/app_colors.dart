@@ -9,6 +9,11 @@ class AppColors {
   static const primaryLight = Color(0xFFE8F0FE);
   static const primaryDark = Color(0xFF0D47A1);
 
+  /// airport gradient
+   static const Color airportOne = Color(0xFF1565C0);
+   static const Color airportTwo = Color(0xFF42A5F5);
+
+
   static const Color heading = Color(0xFFFFF7ED);
   static const Color textColor = Color(0xFF000000);
   static const Color borderColor = Color(0xFF222222);
@@ -48,5 +53,25 @@ class AppColors {
   /// gradient color
   static const Color gradientOne = Color(0xFF0A1628);
   static const Color gradientTwo = Color(0xFF0D2040);
+
+  /// color for custom Text Form Field
+  static const Color white = Color(0xffffffff);
+
+  static const Color profileTextColor = Color(0xFF757575);
+  static const Color splash = Color(0xffFFFDF6);
+  static const Color accent = Color(0xFFFFA500);
+  static const Color headerColor = Color(0xFF2D2D2D);
+  static const Color bodyColor = Color(0xFF636F85);
+  static const Color greenColor = Color(0xFF388E3C);
+  static const Color redColor = Color(0xFFE53935);
+
+  static const Color greyLight = Color(0xFFF7FAFC);
+  static const Color textGrey = Color(0xFF718096);
+  static const Color blackColor = Color(0xFF000000);
+  static const Color lightOrangeColor = Color(0xFFFFF7ED);
+  static const Color navColor = Color(0xffFFFFFF);
+  static const Color darkBorderColorOFButton = Color(0xFF383737);
+  static const Color darkCard = Color(0xFF242424);
+  static const Color lightCard = Color(0xFFFFFFFF);
 
 }
