@@ -92,8 +92,6 @@ class AirportPickerSheet extends StatelessWidget {
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 16.w),
                 child: CustomTextFormField(
-                  containerColor: AppColors.primary,
-                  hintTextColor: AppColors.primaryLight,
                   prefixIcon: Icon(Icons.search),
                   controller: airportController.searchController,
                   hintText: "Search airport name or IATA code",

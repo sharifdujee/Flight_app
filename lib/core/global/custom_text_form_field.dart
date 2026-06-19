@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -46,8 +44,8 @@ class CustomTextFormField extends StatelessWidget {
     this.border,
     this.enabledBorder,
     this.focusedBorder,
-    this.containerColor = const Color(0xffF9FAFB),
-    this.hintTextColor = AppColors.profileTextColor,
+    this.containerColor,
+    this.hintTextColor,
     this.hintTextSize = 15,
     this.suffixText,
     this.suffixTextStyle,
@@ -58,17 +56,15 @@ class CustomTextFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final Color resolvedFillColor = containerColor ?? const Color(0xffF9FAFB);
+    final Color resolvedTextColor = AppColors.headerColor;
+    final Color resolvedHintColor = hintTextColor ?? AppColors.profileTextColor;
+    final Color resolvedIconColor = AppColors.profileTextColor;
+    const Color resolvedBorderColor = Color(0xFFE0E0E0);
+
     return Container(
       width: double.maxFinite,
       padding: EdgeInsets.symmetric(vertical: 10.h),
-      decoration: BoxDecoration(
-        ///borderRadius: BorderRadius.circular(borderRadius??4)
-      ),
-      /*decoration: BoxDecoration(
-        color:isDarkMode?Color(0xff171717) : Color(0xffF9FAFB),
-        borderRadius: BorderRadius.circular(4),
-      ),*/
       child: TextFormField(
         controller: controller,
         readOnly: readonly,
@@ -76,39 +72,40 @@ class CustomTextFormField extends StatelessWidget {
         maxLines: maxLines,
         keyboardType: keyboardType,
         inputFormatters: inputFormatters,
+        cursorColor: AppColors.primary,
         style: GoogleFonts.poppins(
           fontSize: 16.w,
           fontWeight: FontWeight.w400,
-          color:isDarkMode?AppColors.primaryLight: AppColors.headerColor,
+          color: resolvedTextColor,
         ),
         validator: validator,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: InputDecoration(
           filled: true,
-          fillColor: isDarkMode? AppColors.textSecondary : Colors.white ,
-          prefixIcon:
-          prefixIcon ??
-              ((prefixIconPath != null)
-                  ? Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  //  SizedBox(width: getWidth(20)),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Image.asset(
-                      prefixIconPath!,
-                      height: 26.h,
-                      width: 26.w,
-                    ),
-                  ),
-                  //  SizedBox(width: getWidth(10)),
-                ],
-              )
-                  : null),
+          fillColor: resolvedFillColor,
+          prefixIcon: prefixIcon != null
+              ? IconTheme(
+            data: IconThemeData(color: resolvedIconColor),
+            child: prefixIcon!,
+          )
+              : ((prefixIconPath != null)
+              ? Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Image.asset(
+                  prefixIconPath!,
+                  height: 26.h,
+                  width: 26.w,
+                ),
+              ),
+            ],
+          )
+              : null),
           suffixIcon: suffixIcon,
           suffixText: suffixText,
-          suffixStyle:
-          suffixTextStyle ??
+          suffixStyle: suffixTextStyle ??
               GoogleFonts.poppins(
                 fontSize: 12.w,
                 fontWeight: FontWeight.w400,
@@ -118,17 +115,17 @@ class CustomTextFormField extends StatelessWidget {
           hintStyle: GoogleFonts.poppins(
             fontSize: hintTextSize ?? 15.w,
             fontWeight: FontWeight.w400,
-            color: hintTextColor ?? AppColors.headerColor,
+            color: resolvedHintColor,
           ),
           border: border ??
               OutlineInputBorder(
                 borderRadius: BorderRadius.circular(borderRadius ?? 8),
-                borderSide: BorderSide(color: Color(0xFFE0E0E0)),
+                borderSide: const BorderSide(color: resolvedBorderColor),
               ),
           focusedBorder: focusedBorder ??
               OutlineInputBorder(
                 borderRadius: BorderRadius.circular(borderRadius ?? 8),
-                borderSide: BorderSide(color: Color(0xFFE0E0E0)),
+                borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
               ),
           focusedErrorBorder: focusedBorder ??
               OutlineInputBorder(
@@ -138,11 +135,9 @@ class CustomTextFormField extends StatelessWidget {
           enabledBorder: enabledBorder ??
               OutlineInputBorder(
                 borderRadius: BorderRadius.circular(borderRadius ?? 8),
-                borderSide: BorderSide(color: Color(0xFFE0E0E0)),
+                borderSide: const BorderSide(color: resolvedBorderColor),
               ),
-
           errorBorder: InputBorder.none,
-
           disabledBorder: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
         ),
