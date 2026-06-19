@@ -3,86 +3,12 @@ import 'dart:developer';
 import 'dart:math' as math;
 import 'package:flight_app/core/services/network_caller.dart';
 import 'package:flight_app/core/utils/contants/app_url.dart';
+import 'package:flight_app/features/flight/data/flight_dummy_data.dart';
 import 'package:get/get.dart';
 
 import '../data/flight_data.dart';
 
 enum FlightFilter { all, fastest }
-
-// ─── Airline catalogue used for mock route generation ────────────────────────
-const _airlines = [
-  _AirlineInfo(
-    'Emirates',
-    'EK',
-    'https://www.gstatic.com/flights/airline_logos/70px/EK.png',
-  ),
-  _AirlineInfo(
-    'Qatar Airways',
-    'QR',
-    'https://www.gstatic.com/flights/airline_logos/70px/QR.png',
-  ),
-  _AirlineInfo(
-    'flydubai',
-    'FZ',
-    'https://www.gstatic.com/flights/airline_logos/70px/FZ.png',
-  ),
-  _AirlineInfo(
-    'Turkish Airlines',
-    'TK',
-    'https://www.gstatic.com/flights/airline_logos/70px/TK.png',
-  ),
-  _AirlineInfo(
-    'Lufthansa',
-    'LH',
-    'https://www.gstatic.com/flights/airline_logos/70px/LH.png',
-  ),
-  _AirlineInfo(
-    'British Airways',
-    'BA',
-    'https://www.gstatic.com/flights/airline_logos/70px/BA.png',
-  ),
-  _AirlineInfo(
-    'Singapore Airlines',
-    'SQ',
-    'https://www.gstatic.com/flights/airline_logos/70px/SQ.png',
-  ),
-  _AirlineInfo(
-    'Air France',
-    'AF',
-    'https://www.gstatic.com/flights/airline_logos/70px/AF.png',
-  ),
-  _AirlineInfo(
-    'KLM',
-    'KL',
-    'https://www.gstatic.com/flights/airline_logos/70px/KL.png',
-  ),
-  _AirlineInfo(
-    'Etihad Airways',
-    'EY',
-    'https://www.gstatic.com/flights/airline_logos/70px/EY.png',
-  ),
-];
-
-class _AirlineInfo {
-  final String name;
-  final String code;
-  final String logo;
-  const _AirlineInfo(this.name, this.code, this.logo);
-}
-
-// ─── Hub airports used for layover generation ─────────────────────────────────
-const _hubs = [
-  ('DXB', 'Dubai International Airport'),
-  ('DOH', 'Hamad International Airport'),
-  ('IST', 'Istanbul Airport'),
-  ('LHR', 'London Heathrow Airport'),
-  ('CDG', 'Charles de Gaulle Airport'),
-  ('AMS', 'Amsterdam Airport Schiphol'),
-  ('FRA', 'Frankfurt Airport'),
-  ('SIN', 'Singapore Changi Airport'),
-  ('AUH', 'Abu Dhabi International Airport'),
-  ('KUL', 'Kuala Lumpur International Airport'),
-];
 
 class FlightController extends GetxController {
   final isLoading = false.obs;
@@ -101,11 +27,9 @@ class FlightController extends GetxController {
   FlightFilter get activeFilter => FlightFilter.values[activeFilterIndex.value];
   final NetworkCaller networkCaller = NetworkCaller();
 
-  // ── Stored route for re-use ───────────────────────────────────────────────
   String _lastDep = '';
   String _lastArr = '';
 
-  // ── Per-card expand/collapse state (keyed by position in displayedFlights) ─
   final RxSet<int> expandedCardIndices = <int>{}.obs;
 
   bool isCardExpanded(int index) => expandedCardIndices.contains(index);
@@ -118,9 +42,6 @@ class FlightController extends GetxController {
     }
   }
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // MAIN SEARCH
-  // ─────────────────────────────────────────────────────────────────────────
   Future<void> searchFlights({
     required String departure,
     required String arrival,
@@ -137,27 +58,12 @@ class FlightController extends GetxController {
     _addLog('REQUEST', 'GET ${AppUrl.flight}\nroute: $departure → $arrival');
 
     try {
-      final response =  await networkCaller.getRequest(AppUrl.flight);
+      final response = await networkCaller.getRequest(AppUrl.flight);
 
-      // ── Log raw response ─────────────────────────────────────────────────
       final rawResponse = response.responseData;
-
 
       if (response.statusCode == 200) {
         final decoded = json.decode(rawResponse) as Map<String, dynamic>;
-
-        // Log structure summary
-        final bestCount = (decoded['best_flights'] as List?)?.length ?? 0;
-        final otherCount = (decoded['other_flights'] as List?)?.length ?? 0;
-        _addLog(
-          'PARSED',
-          'best_flights: $bestCount items\n'
-              'other_flights: $otherCount items\n'
-              'Raw API departure: ${_extractRawRoute(decoded, "departure")}\n'
-              'Raw API arrival:   ${_extractRawRoute(decoded, "arrival")}\n\n'
-              '⚠️  This is a STATIC mock API. It always returns DAC→DXB data.\n'
-              'The app adapts the data for the selected route: $departure → $arrival',
-        );
 
         final parsed = FlightSearchResponse.fromJson(decoded);
 
@@ -165,13 +71,6 @@ class FlightController extends GetxController {
           departure: departure,
           arrival: arrival,
           seed: parsed,
-        );
-
-        _addLog(
-          'ADAPTED',
-          'Generated ${generated.best.length} best flights\n'
-              'Generated ${generated.other.length} other flights\n'
-              'All segments now show: $departure → $arrival',
         );
 
         bestFlights.assignAll(generated.best);
@@ -208,12 +107,10 @@ class FlightController extends GetxController {
   }) {
     final rng = math.Random(departure.hashCode ^ arrival.hashCode);
 
-    // Pick airlines seeded by route so the same route always shows same airlines
-    final shuffledAirlines = List<_AirlineInfo>.from(_airlines)..shuffle(rng);
+    final shuffledAirlines = List<AirlineInfo>.from(airlines)..shuffle(rng);
 
-    // Pick hub airports (exclude dep/arr themselves)
     final availableHubs =
-        _hubs.where((h) => h.$1 != departure && h.$1 != arrival).toList()
+        hubs.where((h) => h.$1 != departure && h.$1 != arrival).toList()
           ..shuffle(rng);
 
     List<FlightResult> buildBatch(List<FlightResult> source, bool isBest) {
@@ -262,7 +159,7 @@ class FlightController extends GetxController {
   FlightResult _buildNonstop({
     required String dep,
     required String arr,
-    required _AirlineInfo airline,
+    required AirlineInfo airline,
     required String flightNo,
     required String depTime,
     required String arrTime,
@@ -301,7 +198,7 @@ class FlightController extends GetxController {
     required String dep,
     required String arr,
     required (String, String) hub,
-    required _AirlineInfo airline,
+    required AirlineInfo airline,
     required String flightNoA,
     required String flightNoB,
     required FlightResult seedFlt,
