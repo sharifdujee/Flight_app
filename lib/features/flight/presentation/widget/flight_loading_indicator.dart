@@ -1,10 +1,10 @@
+import 'package:flight_app/core/global/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/global/custom_loading.dart';
-
 
 class FlightLoadingWidget extends StatelessWidget {
   const FlightLoadingWidget({super.key});
@@ -15,23 +15,20 @@ class FlightLoadingWidget extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const CustomLoading(
-            color: AppColors.primary,
-            size: 50,
-          ),
+          const CustomLoading(color: AppColors.primary, size: 50),
           Gap(20.h),
-          Text(
-            'Searching flights…',
-            style: TextStyle(
-              fontSize: 15.sp,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textSecondary,
-            ),
+          CustomText(
+            text: 'Searching flights…',
+
+            fontSize: 15.sp,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textSecondary,
           ),
           Gap(6.h),
-          Text(
-            'Finding the best deals for you',
-            style: TextStyle(fontSize: 12.sp, color: AppColors.textHint),
+          CustomText(
+            text: 'Finding the best deals for you',
+            fontSize: 12.sp,
+            color: AppColors.textHint,
           ),
         ],
       ),

@@ -1,3 +1,4 @@
+import 'package:flight_app/core/global/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -57,29 +58,29 @@ class PriceInsightBanner extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  _levelLabel,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w700,
-                    color: _levelColor,
-                  ),
+                CustomText(
+                  text: _levelLabel,
+
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w700,
+                  color: _levelColor,
                 ),
                 if (insights.typicalPriceRange.length == 2)
-                  Text(
-                    'Typical: \$${insights.typicalPriceRange[0]}–\$${insights.typicalPriceRange[1]}',
-                    style: TextStyle(fontSize: 11.sp, color: AppColors.textSecondary),
+                  CustomText(
+                    text:
+                        'Typical: \$${insights.typicalPriceRange[0]}–\$${insights.typicalPriceRange[1]}',
+                    fontSize: 11.sp,
+                    color: AppColors.textSecondary,
                   ),
               ],
             ),
           ),
-          Text(
-            'from \$${insights.lowestPrice}',
-            style: TextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w800,
-              color: AppColors.primary,
-            ),
+          CustomText(
+            text: 'from \$${insights.lowestPrice}',
+
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w800,
+            color: AppColors.primary,
           ),
         ],
       ),

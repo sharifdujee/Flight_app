@@ -1,3 +1,4 @@
+import 'package:flight_app/core/global/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -28,11 +29,11 @@ class AmenitiesColumn extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         for (final line in lines)
-          Padding(
-            padding: EdgeInsets.only(bottom: 6.h),
-            child: Text(
-              line,
-              style: TextStyle(fontSize: 10.5.sp, color: AppColors.textSecondary),
+          Container(
+            margin: EdgeInsets.only(bottom: 6.h),
+            child: CustomText(
+             text:  line,
+              fontSize: 10.5.sp, color: AppColors.textSecondary,
             ),
           ),
       ],

@@ -1,3 +1,4 @@
+import 'package:flight_app/core/global/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -17,13 +18,13 @@ class SelectFlightButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(20.r),
           border: Border.all(color: AppColors.border),
         ),
-        child: Text(
-          'Select flight',
-          style: TextStyle(
+        child: CustomText(
+          text: 'Select flight',
+
             fontSize: 11.5.sp,
             fontWeight: FontWeight.w700,
             color: AppColors.accentBlue,
-          ),
+
         ),
       ),
     );

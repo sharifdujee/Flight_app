@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:math' as math;
+import 'package:flight_app/core/services/network_caller.dart';
 import 'package:flight_app/core/utils/contants/app_url.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
+
 import '../data/flight_data.dart';
 
 enum FlightFilter { all, fastest }
@@ -98,6 +99,7 @@ class FlightController extends GetxController {
   final RxList<Map<String, String>> apiLogs = <Map<String, String>>[].obs;
 
   FlightFilter get activeFilter => FlightFilter.values[activeFilterIndex.value];
+  final NetworkCaller networkCaller = NetworkCaller();
 
   // ── Stored route for re-use ───────────────────────────────────────────────
   String _lastDep = '';
@@ -135,15 +137,11 @@ class FlightController extends GetxController {
     _addLog('REQUEST', 'GET ${AppUrl.flight}\nroute: $departure → $arrival');
 
     try {
-      final response = await http.get(Uri.parse(AppUrl.flight));
+      final response =  await networkCaller.getRequest(AppUrl.flight);
 
       // ── Log raw response ─────────────────────────────────────────────────
-      final rawResponse = response.body;
-      _addLog(
-        'RESPONSE [${response.statusCode}]',
-        'Headers: ${response.headers.entries.take(4).map((e) => '${e.key}: ${e.value}').join(', ')}\n\n'
-            'Body (first 800 chars):\n${rawResponse.length > 800 ? '${rawResponse.substring(0, 800)}…' : rawResponse}',
-      );
+      final rawResponse = response.responseData;
+
 
       if (response.statusCode == 200) {
         final decoded = json.decode(rawResponse) as Map<String, dynamic>;

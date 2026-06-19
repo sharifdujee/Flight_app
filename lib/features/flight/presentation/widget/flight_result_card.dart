@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gap/gap.dart';
+
 import 'package:get/get.dart';
 
 import '../../../../core/constants/app_colors.dart';
@@ -63,7 +63,7 @@ class FlightResultCard extends StatelessWidget {
             InkWell(
               borderRadius: BorderRadius.circular(14.r),
               onTap: () => controller.toggleCardExpanded(index),
-              child: Padding(
+              child: Container(
                 padding: EdgeInsets.all(12.w),
                 child: CardHeader(
                   flight: flight,
@@ -74,7 +74,7 @@ class FlightResultCard extends StatelessWidget {
             ),
             if (expanded) ...[
               Container(height: 1, color: AppColors.divider),
-              Padding(
+              Container(
                 padding: EdgeInsets.all(14.w),
                 child: CardDetails(flight: flight),
               ),

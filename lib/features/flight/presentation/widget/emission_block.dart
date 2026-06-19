@@ -1,3 +1,4 @@
+import 'package:flight_app/core/global/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -21,13 +22,13 @@ class EmissionsBlock extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              '${flight.carbonEmissionKg} kg CO₂',
-              style: TextStyle(
+            CustomText(
+             text:  '${flight.carbonEmissionKg} kg CO₂',
+
                 fontSize: 11.sp,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
-              ),
+
             ),
             Gap(3.h),
             Container(
@@ -36,24 +37,21 @@ class EmissionsBlock extends StatelessWidget {
                 color: AppColors.emissionsBg,
                 borderRadius: BorderRadius.circular(4.r),
               ),
-              child: Text(
-                diffLabel,
-                style: TextStyle(
+              child: CustomText(
+              text:   diffLabel,
+
                   fontSize: 9.5.sp,
                   fontWeight: FontWeight.w600,
                   color: AppColors.emissionsText,
-                ),
+
               ),
             ),
           ],
         ),
         Gap(5.w),
-        Icon(
-          Icons.info_outline_rounded,
-          size: 12.sp,
-          color: AppColors.textSecondary,
-        ),
+
       ],
     );
   }
 }
+

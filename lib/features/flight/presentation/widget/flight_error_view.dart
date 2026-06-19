@@ -1,3 +1,5 @@
+import 'package:flight_app/core/global/custom_button.dart';
+import 'package:flight_app/core/global/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -17,28 +19,28 @@ class FlightErrorView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.wifi_off_rounded, size: 64.sp, color: Colors.grey[300]),
+            Icon(Icons.wifi_off_rounded, size: 64.sp, color: AppColors.grey300),
             Gap(16.h),
-            Text(
-              'Could not load flights',
-              style: TextStyle(
+            CustomText(
+             text:  'Could not load flights',
+
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w700,
                 color: AppColors.textSecondary,
-              ),
+
             ),
             Gap(6.h),
-            Text(
-              message,
-              style: TextStyle(fontSize: 12.sp, color: AppColors.textHint),
-              textAlign: TextAlign.center,
-            ),
+            CustomText(
+                textAlign: TextAlign.center,
+             text:  message,
+              fontSize: 12.sp, color: AppColors.textHint),
+
+
             Gap(24.h),
-            ElevatedButton.icon(
-              onPressed: onRetry,
-              icon: const Icon(Icons.refresh_rounded),
-              label: const Text('Try again'),
-            ),
+            CustomButton(text: "Try Again", onPressed: (){
+              onRetry;
+            }, prefixIcon: Icons.refresh_outlined)
+            
           ],
         ),
       ),

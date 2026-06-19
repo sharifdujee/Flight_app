@@ -23,7 +23,7 @@ class CardDetails extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AirlineLogoBadge(logoUrl: flight.airlineLogo),
+
             Gap(10.w),
             Expanded(flex: 3, child: CustomTimeline(flight: flight)),
             Gap(12.w),
@@ -31,25 +31,10 @@ class CardDetails extends StatelessWidget {
           ],
         ),
         Gap(12.h),
-        Padding(
-          padding: EdgeInsets.only(left: 40.w),
-          child: Text(
-            _footerText(flight),
-            style: TextStyle(fontSize: 10.5.sp, color: AppColors.textSecondary),
-          ),
-        ),
+
       ],
     );
   }
 
-  String _footerText(FlightResult f) {
-    if (f.flights.length == 1) {
-      final s = f.flights.first;
-      return '${s.airline} · ${s.travelClass} · ${s.airplane} · ${s.flightNumber}';
-    }
-    final airlineNames = f.flights.map((s) => s.airline).toSet().join(' · ');
-    final cls = f.flights.first.travelClass;
-    final flightNos = f.flights.map((s) => s.flightNumber).join(', ');
-    return '$airlineNames · $cls · $flightNos';
-  }
+
 }

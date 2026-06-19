@@ -5,7 +5,7 @@ import 'package:gap/gap.dart';
 import '../../../../core/constants/app_colors.dart';
 
 class TimelineDots extends StatelessWidget {
-  const TimelineDots();
+  const TimelineDots({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,13 +14,13 @@ class TimelineDots extends StatelessWidget {
       child: Column(
         children: [
           _ring(),
-          Gap(4.h),
+          Gap(10.h),
           _dot(),
-          Gap(3.h),
+          Gap(8.h),
           _dot(),
-          Gap(3.h),
+          Gap(8.h),
           _dot(),
-          Gap(4.h),
+          Gap(10.h),
           _ring(),
         ],
       ),

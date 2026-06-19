@@ -23,10 +23,10 @@ class AirlineLogoBadge extends StatelessWidget {
           logoUrl,
           fit: BoxFit.contain,
           errorBuilder: (_, __, ___) =>
-              Icon(Icons.flight_rounded, size: 16.sp, color: Colors.black54),
+              Icon(Icons.flight_rounded, size: 16.sp, color: AppColors.blackColor),
         ),
       )
-          : Icon(Icons.flight_rounded, size: 16.sp, color: Colors.black54),
+          : Icon(Icons.flight_rounded, size: 16.sp, color: AppColors.blackColor),
     );
   }
 }

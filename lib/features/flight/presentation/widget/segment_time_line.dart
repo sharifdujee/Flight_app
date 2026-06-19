@@ -28,12 +28,12 @@ class SegmentTimeline extends StatelessWidget {
                 time: segment.departureAirport.timeFormatted,
                 label: '${segment.departureAirport.name} (${segment.departureAirport.id})',
               ),
-              Gap(5.h),
+              Gap(10.h),
               Text(
                 'Travel time: ${segment.durationFormatted}',
                 style: TextStyle(fontSize: 10.5.sp, color: AppColors.textSecondary),
               ),
-              Gap(5.h),
+              Gap(10.h),
               TimelineText(
                 time: segment.arrivalAirport.timeFormatted,
                 label: '${segment.arrivalAirport.name} (${segment.arrivalAirport.id})',

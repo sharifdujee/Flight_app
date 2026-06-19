@@ -73,5 +73,8 @@ class AppColors {
   static const Color darkBorderColorOFButton = Color(0xFF383737);
   static const Color darkCard = Color(0xFF242424);
   static const Color lightCard = Color(0xFFFFFFFF);
+  /// need to change color code
+  static const Color grey300 = Color(0xFFFFFFFF);
+
 
 }

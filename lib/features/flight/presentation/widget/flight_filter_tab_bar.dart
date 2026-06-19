@@ -1,3 +1,4 @@
+import 'package:flight_app/core/global/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -49,13 +50,13 @@ class FlightFilterBar extends StatelessWidget {
                     color: isActive ? Colors.white : AppColors.textSecondary,
                   ),
                   Gap(5.w),
-                  Text(
-                    _labels[i],
-                    style: TextStyle(
+                  CustomText(
+                  text:   _labels[i],
+
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w600,
                       color: isActive ? Colors.white : AppColors.textSecondary,
-                    ),
+
                   ),
                 ],
               ),

@@ -60,6 +60,7 @@ class CardHeader extends StatelessWidget {
                 color: AppColors.textPrimary,
 
             ),
+
             Gap(6.w),
             Icon(
               expanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
@@ -68,16 +69,34 @@ class CardHeader extends StatelessWidget {
             ),
           ],
         ),
+        Gap(5.h),
+        Container(
+          margin: EdgeInsets.only(left: 50.w),
+            child: CustomText(text: _footerText(flight,), textAlign: TextAlign.center,color: AppColors.blackColor,)),
         Gap(10.h),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(child: EmissionsBlock(flight: flight)),
-            Gap(8.w),
-            SelectFlightButton(onTap: onSelect),
-          ],
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 50.w),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(child: EmissionsBlock(flight: flight)),
+              Gap(8.w),
+              SelectFlightButton(onTap: onSelect),
+            ],
+          ),
         ),
       ],
     );
+  }
+
+  String _footerText(FlightResult f) {
+    if (f.flights.length == 1) {
+      final s = f.flights.first;
+      return '${s.airline} · ${s.travelClass} · ${s.airplane} · ${s.flightNumber}';
+    }
+    final airlineNames = f.flights.map((s) => s.airline).toSet().join(' · ');
+    final cls = f.flights.first.travelClass;
+    final flightNos = f.flights.map((s) => s.flightNumber).join(', ');
+    return '$airlineNames · $cls · $flightNos';
   }
 }

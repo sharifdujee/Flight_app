@@ -21,8 +21,8 @@ class CustomTimeline extends StatelessWidget {
       children.add(SegmentTimeline(segment: segments[i]));
       if (i < layovers.length) {
         children.add(
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.h),
+          Container(
+            margin: EdgeInsets.symmetric(vertical: 8.h),
             child: LayoverRow(layover: layovers[i]),
           ),
         );

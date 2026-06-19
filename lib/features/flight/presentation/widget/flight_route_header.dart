@@ -1,3 +1,4 @@
+import 'package:flight_app/core/global/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -14,27 +15,27 @@ class FlightRouteHeader extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          departure.code,
-          style: TextStyle(
+        CustomText(
+         text:  departure.code,
+
             fontSize: 17.sp,
             fontWeight: FontWeight.w800,
             color: Colors.white,
             letterSpacing: 0.5,
-          ),
+
         ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8.w),
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 8.w),
           child: Icon(Icons.arrow_forward_rounded, size: 16.sp, color: Colors.white70),
         ),
-        Text(
-          arrival.code,
-          style: TextStyle(
+        CustomText(
+        text:   arrival.code,
+
             fontSize: 17.sp,
             fontWeight: FontWeight.w800,
             color: Colors.white,
             letterSpacing: 0.5,
-          ),
+
         ),
         Gap(8.w),
         Container(
@@ -43,9 +44,9 @@ class FlightRouteHeader extends StatelessWidget {
             color: Colors.white.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(10.r),
           ),
-          child: Text(
-            'One way',
-            style: TextStyle(fontSize: 10.sp, color: Colors.white, fontWeight: FontWeight.w600),
+          child: CustomText(
+           text:  'One way',
+            fontSize: 10.sp, color: Colors.white, fontWeight: FontWeight.w600,
           ),
         ),
       ],

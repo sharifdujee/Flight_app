@@ -146,7 +146,7 @@ class SelectorCard extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                       color: canSearch
                           ? AppColors.primaryLight
-                          : AppColors.textSecondary,
+                          : AppColors.primaryLight,
                     ),
                   ],
                 ),
