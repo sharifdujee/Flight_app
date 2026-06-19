@@ -25,7 +25,7 @@ class AirportScreen extends StatelessWidget {
         slivers: [
           // ── Hero AppBar ────────────────────────────────────────────────────
           SliverAppBar(
-            expandedHeight: 140.h,
+            expandedHeight: 100.h,
             floating: false,
             pinned: true,
             backgroundColor: AppColors.primary,
@@ -83,7 +83,7 @@ class AirportScreen extends StatelessWidget {
           // ── Body ───────────────────────────────────────────────────────────
           SliverToBoxAdapter(
             child: Container(
-              margin: EdgeInsets.all(16.w),
+              margin: EdgeInsets.all(26.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

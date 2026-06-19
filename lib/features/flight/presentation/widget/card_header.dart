@@ -71,7 +71,7 @@ class CardHeader extends StatelessWidget {
         ),
         Gap(5.h),
         Container(
-          margin: EdgeInsets.only(left: 50.w),
+          margin: EdgeInsets.only(left: 30.w),
             child: CustomText(text: _footerText(flight,), textAlign: TextAlign.center,color: AppColors.blackColor,)),
         Gap(10.h),
         Container(
