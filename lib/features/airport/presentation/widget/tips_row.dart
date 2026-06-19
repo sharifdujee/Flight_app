@@ -1,3 +1,4 @@
+import 'package:flight_app/core/global/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -11,8 +12,8 @@ class TipsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 8.h),
+    return Container(
+      margin: EdgeInsets.only(bottom: 8.h),
       child: Row(
         children: [
           Container(
@@ -26,9 +27,9 @@ class TipsRow extends StatelessWidget {
           ),
           Gap(10.w),
           Expanded(
-            child: Text(
-              text,
-              style: TextStyle(fontSize: 12.sp, color: AppColors.textSecondary),
+            child: CustomText(
+            text:   text,
+              fontSize: 12.sp, color: AppColors.textSecondary,
             ),
           ),
         ],

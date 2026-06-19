@@ -1,3 +1,4 @@
+import 'package:flight_app/core/global/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -7,10 +8,11 @@ import '../../../flight/controller/flight_controller.dart';
 import '../../../flight/screen/flight_result_screen.dart';
 import '../../controller/airport_controller.dart';
 import 'airport_picker_sheet.dart';
-import 'airport_widget.dart';
+import 'airport_selector.dart';
 
 class SelectorCard extends StatelessWidget {
-  const SelectorCard({super.key,
+  const SelectorCard({
+    super.key,
     required this.airportCtrl,
     required this.flightCtrl,
   });
@@ -54,8 +56,8 @@ class SelectorCard extends StatelessWidget {
             onClear: airportCtrl.clearDeparture,
           ),
           // Divider + Swap
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 6.h),
+          Container(
+            margin: EdgeInsets.symmetric(vertical: 6.h),
             child: Row(
               children: [
                 Expanded(
@@ -112,18 +114,17 @@ class SelectorCard extends StatelessWidget {
           Gap(16.h),
           // Search Button
           Obx(() {
-            final canSearch = airportCtrl.departureAirport.value != null &&
+            final canSearch =
+                airportCtrl.departureAirport.value != null &&
                 airportCtrl.arrivalAirport.value != null;
             return SizedBox(
               width: double.infinity,
               height: 52.h,
               child: ElevatedButton(
-                onPressed: canSearch
-                    ? () => _onSearch(context)
-                    : null,
+                onPressed: canSearch ? () => _onSearch(context) : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
-                  disabledBackgroundColor: Colors.grey[200],
+                  disabledBackgroundColor: AppColors.textSecondary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14.r),
                   ),
@@ -138,13 +139,14 @@ class SelectorCard extends StatelessWidget {
                       color: canSearch ? Colors.white : Colors.grey[400],
                     ),
                     Gap(8.w),
-                    Text(
-                      'Search Flights',
-                      style: TextStyle(
-                        fontSize: 15.sp,
-                        fontWeight: FontWeight.w700,
-                        color: canSearch ? Colors.white : Colors.grey[400],
-                      ),
+                    CustomText(
+                      text: 'Search Flights',
+
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w700,
+                      color: canSearch
+                          ? AppColors.primaryLight
+                          : AppColors.textSecondary,
                     ),
                   ],
                 ),
@@ -164,10 +166,7 @@ class SelectorCard extends StatelessWidget {
     flightCtrl.clearResults();
 
     Get.to(
-          () => FlightResultsScreen(
-        departure: dep,
-        arrival: arr,
-      ),
+      () => FlightResultsScreen(departure: dep, arrival: arr),
       transition: Transition.rightToLeft,
       duration: const Duration(milliseconds: 300),
     );
