@@ -1,17 +1,19 @@
 import 'dart:developer';
+import 'package:flight_app/core/services/network_caller.dart';
+import 'package:flight_app/core/utils/contants/app_url.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import '../data/airport_data.dart';
 
-const _airportApiUrl =
-    'https://innotraveltech.mynetworkfiles.org/profile_picture/1320260617T182840_YCcqOAKb.json';
+
 
 class AirportController extends GetxController {
   // ── State ──────────────────────────────────────────────────────────────────
   final isLoading = false.obs;
   final hasError = false.obs;
   final errorMessage = ''.obs;
+  final NetworkCaller networkCaller = NetworkCaller();
 
   final RxList<Airport> allAirports = <Airport>[].obs;
   final RxList<Airport> filteredAirports = <Airport>[].obs;
@@ -26,8 +28,10 @@ class AirportController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchAirports();
+    ///fetchAirports();
+    getAirPortList();
     searchController.addListener(_onSearchChanged);
+    clearSearch();
   }
 
   @override
@@ -43,29 +47,31 @@ class AirportController extends GetxController {
     (Icons.bolt_rounded, 'Fastest tab finds the quickest travel option'),
   ];
 
-  // ── API ────────────────────────────────────────────────────────────────────
-  Future<void> fetchAirports() async {
+
+
+  /// fetch airport
+   Future<void> getAirPortList()async{
     isLoading.value = true;
     hasError.value = false;
-    try {
-      final response = await http.get(Uri.parse(_airportApiUrl));
-      if (response.statusCode == 200) {
-        final parsed = airportResponseFromJson(response.body);
+    try{
+      var response = await networkCaller.getRequest(AppUrl.getAllAirportData);
+      if(response.isSuccess){
+        final parsed = airportResponseFromJson(response.responseData);
         final sorted = parsed.airports
           ..sort((a, b) => a.airportName.compareTo(b.airportName));
         allAirports.assignAll(sorted);
         filteredAirports.assignAll(sorted);
-        log('Airports loaded: ${allAirports.length}');
-      } else {
-        _setError('Server error: ${response.statusCode}');
+
       }
-    } catch (e) {
-      _setError('Failed to load airports: $e');
-      log('Airport fetch error: $e');
-    } finally {
+
+    }
+    catch(e){
+      log("The exception is ${e.toString()}");
+    }
+    finally{
       isLoading.value = false;
     }
-  }
+   }
 
   // ── Search ─────────────────────────────────────────────────────────────────
   void _onSearchChanged() {

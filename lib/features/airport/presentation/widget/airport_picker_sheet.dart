@@ -7,7 +7,6 @@ import '../../../../core/constants/app_colors.dart';
 import '../../controller/airport_controller.dart';
 import 'airport_list_section.dart';
 
-
 class AirportPickerSheet extends StatelessWidget {
   const AirportPickerSheet({super.key, required this.isDeparture});
 
@@ -70,8 +69,8 @@ class AirportPickerSheet extends StatelessWidget {
                       onTap: () => Get.back(),
                       child: Container(
                         padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF5F5F5),
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFF5F5F5),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(Icons.close, size: 18.sp, color: AppColors.textSecondary),
@@ -146,7 +145,7 @@ class AirportPickerSheet extends StatelessWidget {
                   if (ctrl.hasError.value) {
                     return _ErrorView(
                       message: ctrl.errorMessage.value,
-                      onRetry: ctrl.fetchAirports,
+                      onRetry: ctrl.getAirPortList,
                     );
                   }
                   if (ctrl.filteredAirports.isEmpty) {
@@ -157,14 +156,21 @@ class AirportPickerSheet extends StatelessWidget {
                     itemCount: ctrl.filteredAirports.length,
                     itemBuilder: (_, i) {
                       final airport = ctrl.filteredAirports[i];
+                      final selected = isDeparture
+                          ? ctrl.departureAirport.value?.code == airport.code
+                          : ctrl.arrivalAirport.value?.code == airport.code;
                       return AirportListSection(
                         airport: airport,
-                        onTap: () => isDeparture
-                            ? ctrl.selectAsDeparture(airport)
-                            : ctrl.selectAsArrival(airport),
-                        isSelected: isDeparture
-                            ? ctrl.departureAirport.value?.code == airport.code
-                            : ctrl.arrivalAirport.value?.code == airport.code,
+                        isSelected: selected,
+                        onTap: () {
+                          // single, guarded call — controller ignores
+                          // re-entrant taps via _isSelecting flag
+                          if (isDeparture) {
+                            ctrl.selectAsDeparture(airport);
+                          } else {
+                            ctrl.selectAsArrival(airport);
+                          }
+                        },
                       );
                     },
                   );

@@ -1,5 +1,5 @@
 import 'package:flight_app/core/constants/app_colors.dart';
-import 'package:flight_app/core/constants/image_path.dart';
+
 import 'package:flight_app/core/global/custom_button.dart';
 import 'package:flight_app/core/global/custom_text.dart';
 import 'package:flight_app/features/routes/app_routes.dart';
@@ -18,14 +18,14 @@ class SplashScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Gap(40.h),
 
-              // ── Logo Row ───────────────────────────────────────────────
+              ///  Logo Row
               Row(
                 children: [
                   Container(
@@ -42,29 +42,29 @@ class SplashScreen extends StatelessWidget {
                     ),
                   ),
                   Gap(10.w),
-                  Text(
-                    'SkySearch',
-                    style: TextStyle(
+                  CustomText(
+                   text:  'SkySearch',
+
                       fontSize: 17.sp,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
                       letterSpacing: 0.3,
-                    ),
+
                   ),
                 ],
               ),
 
               Gap(28.h),
 
-              // ── Tagline + Title ────────────────────────────────────────
-              Text(
-                'YOUR JOURNEY STARTS HERE',
-                style: TextStyle(
+              ///  Tagline + Title
+              CustomText(
+               text:  'YOUR JOURNEY STARTS HERE',
+
                   color: AppColors.primary,
                   fontSize: 11.sp,
                   fontWeight: FontWeight.w500,
                   letterSpacing: 2.5,
-                ),
+
               ),
               Gap(10.h),
               CustomText(
@@ -76,7 +76,7 @@ class SplashScreen extends StatelessWidget {
 
               Gap(24.h),
 
-              // ── Hero Flight Card ───────────────────────────────────────
+              /// Hero Flight Card
               Container(
                 decoration: BoxDecoration(
                   color: const Color(0xFF141414),
@@ -86,20 +86,22 @@ class SplashScreen extends StatelessWidget {
                 clipBehavior: Clip.antiAlias,
                 child: Column(
                   children: [
-                    // Dark banner with plane icon + route
+                    /// Dark banner with plane icon + route
                     Container(
                       height: 160.h,
                       width: double.infinity,
-                      decoration: const BoxDecoration(
+                      decoration:  BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
-                          colors: [Color(0xFF0A1628), Color(0xFF0D2040)],
+                          colors: [AppColors.gradientOne,
+                            AppColors.gradientTwo
+                            ],
                         ),
                       ),
                       child: Stack(
                         children: [
-                          // Plane icon centered
+                          /// Plane icon centered
                           Center(
                             child: Icon(
                               Icons.flight_rounded,
@@ -107,7 +109,7 @@ class SplashScreen extends StatelessWidget {
                               color: AppColors.primary.withValues(alpha: 0.5),
                             ),
                           ),
-                          // Bottom fade
+                          /// Bottom fading
                           Positioned(
                             bottom: 0, left: 0, right: 0,
                             height: 60.h,
@@ -131,13 +133,13 @@ class SplashScreen extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                _RoutePoint(code: 'DAC', label: 'From'),
+                                RoutePoint(code: 'DAC', label: 'From'),
                                 Icon(
                                   Icons.arrow_forward_rounded,
                                   color: AppColors.primary,
                                   size: 20.sp,
                                 ),
-                                _RoutePoint(code: 'DXB', label: 'To', align: CrossAxisAlignment.end),
+                                RoutePoint(code: 'DXB', label: 'To', align: CrossAxisAlignment.end),
                               ],
                             ),
                           ),
@@ -146,14 +148,15 @@ class SplashScreen extends StatelessWidget {
                     ),
 
                     // Stats row
-                    Padding(
+                    Container(
                       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          _StatChip(label: 'Duration', value: '4h 15m'),
-                          _StatChip(label: 'Class', value: 'Economy'),
-                          _StatChip(
+                          StatChip(label: 'Duration', value: '4h 15m'),
+                          StatChip(label: 'Class', value: 'Economy'),
+
+                          StatChip(
                             label: 'From',
                             value: '\$349',
                             valueColor: AppColors.primary,
@@ -170,21 +173,21 @@ class SplashScreen extends StatelessWidget {
               // ── Feature Mini Cards ─────────────────────────────────────
               Row(
                 children: [
-                  _FeatureChip(
+                  FeatureChip(
                     icon: Icons.verified_user_rounded,
                     iconColor: AppColors.primary,
                     label: 'Safe & Secure',
                     sub: 'Verified flights',
                   ),
                   Gap(10.w),
-                  _FeatureChip(
+                  FeatureChip(
                     icon: Icons.bolt_rounded,
                     iconColor: AppColors.success,
                     label: 'Best Prices',
                     sub: 'Real-time deals',
                   ),
                   Gap(10.w),
-                  _FeatureChip(
+                  FeatureChip(
                     icon: Icons.access_time_rounded,
                     iconColor: AppColors.warning,
                     label: '24/7 Support',
@@ -200,6 +203,7 @@ class SplashScreen extends StatelessWidget {
                 width: double.infinity,
                 height: 52.h,
                 child: CustomButton(
+                  textColor: AppColors.primaryLight,
 
                   prefixIcon: Icons.flight,
                     text: "Let's Fly", onPressed: (){
@@ -207,26 +211,7 @@ class SplashScreen extends StatelessWidget {
 
 
                 })
-                /*ElevatedButton.icon(
-                  onPressed: () => ,
-                  icon: const Icon(Icons.flight_rounded, color: Colors.white),
-                  label: Text(
-                    "Let's Fly",
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                      letterSpacing: 0.3,
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14.r),
-                    ),
-                    elevation: 0,
-                  ),
-                ),*/
+
               ),
 
               Gap(12.h),
@@ -250,8 +235,8 @@ class SplashScreen extends StatelessWidget {
 
 // ── Small helpers ────────────────────────────────────────────────────────────
 
-class _RoutePoint extends StatelessWidget {
-  const _RoutePoint({
+class RoutePoint extends StatelessWidget {
+  const RoutePoint({super.key,
     required this.code,
     required this.label,
     this.align = CrossAxisAlignment.start,
@@ -278,8 +263,8 @@ class _RoutePoint extends StatelessWidget {
   }
 }
 
-class _StatChip extends StatelessWidget {
-  const _StatChip({required this.label, required this.value, this.valueColor});
+class StatChip extends StatelessWidget {
+  const StatChip({super.key, required this.label, required this.value, this.valueColor});
   final String label, value;
   final Color? valueColor;
 
@@ -303,8 +288,8 @@ class _StatChip extends StatelessWidget {
   }
 }
 
-class _FeatureChip extends StatelessWidget {
-  const _FeatureChip({
+class FeatureChip extends StatelessWidget {
+  const FeatureChip({super.key,
     required this.icon,
     required this.iconColor,
     required this.label,

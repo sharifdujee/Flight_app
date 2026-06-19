@@ -43,4 +43,9 @@ class AppColors {
   static const emissionsText = Color(0xFF81C995);
   static const bestAccent    = Color(0xFFFBBC04);
   static const logoBg        = Color(0xFFFFFFFF);
+
+  /// gradient color
+  static const Color gradientOne = Color(0xFF0A1628);
+  static const Color gradientTwo = Color(0xFF0D2040);
+
 }

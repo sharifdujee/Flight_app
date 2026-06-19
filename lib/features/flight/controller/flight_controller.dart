@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:math' as math;
-import 'package:flight_app/core/utils/app_url.dart';
+import 'package:flight_app/core/utils/contants/app_url.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import '../data/flight_data.dart';

@@ -9,7 +9,7 @@ class AppBinding  extends Bindings{
 
   @override
   void dependencies() {
-    Get.lazyPut(()=>SplashController(), fenix: true);
+    Get.lazyPut(()=>SplashController(), fenix: true,);
     Get.lazyPut(()=>AirportController(), fenix: true);
     Get.lazyPut(()=>FlightController(), fenix: true);
 

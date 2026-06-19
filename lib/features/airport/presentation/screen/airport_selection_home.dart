@@ -14,8 +14,8 @@ import '../widget/tips_row.dart';
 class AirportScreen extends StatelessWidget {
   AirportScreen({super.key});
 
-  final AirportController airportCtrl = Get.put(AirportController());
-  final FlightController flightCtrl = Get.put(FlightController());
+  final AirportController airportCtrl = Get.find();
+  final FlightController flightCtrl = Get.find();
 
   @override
   Widget build(BuildContext context) {
