@@ -13,7 +13,7 @@ class SplashController extends GetxController {
 
   void navigateNext() {
     _navTimer = Timer(const Duration(seconds: 3), () {
-      // use a short splash duration, not 30s, unless intentional
+
       Get.offAllNamed(AppRoutes.home);
     });
   }

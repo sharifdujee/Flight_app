@@ -11,6 +11,7 @@ class AppColors {
 
   static const Color heading = Color(0xFFFFF7ED);
   static const Color textColor = Color(0xFF000000);
+  static const Color borderColor = Color(0xFF222222);
 
   static const success = Color(0xFF34A853);
   static const successLight = Color(0xFFE6F4EA);
