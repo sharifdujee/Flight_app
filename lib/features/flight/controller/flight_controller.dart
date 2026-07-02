@@ -46,7 +46,7 @@ class FlightController extends GetxController {
   Future<void> searchFlights({
     required String departure,
     required String arrival,
-    required String outboundDate, // format: yyyy-MM-dd
+    required String outboundDate,
   }) async {
     _lastDep = departure;
     _lastArr = arrival;
@@ -57,20 +57,21 @@ class FlightController extends GetxController {
     hasSearched.value = false;
     apiLogs.clear();
 
+/// use query param
+
+
     final uri = Uri.parse(AppUrl.flight).replace(
       queryParameters: {
         ...Uri.parse(AppUrl.flight).queryParameters,
         'departure_id': departure,
         'arrival_id': arrival,
         'outbound_date': outboundDate,
-        'currency': 'USD',
-      },
+        'currency': "USD"
+      }
     );
 
-    _addLog(
-      'REQUEST',
-      'GET $uri\nroute: $departure → $arrival\ndate: $outboundDate',
-    );
+
+
 
     try {
       final response = await networkCaller.getRequest(uri.toString());
@@ -98,7 +99,7 @@ class FlightController extends GetxController {
         hasSearched.value = true;
 
         log(
-          '✅ Flights ready: best=${bestFlights.length}, other=${otherFlights.length}',
+          'Flights ready: best=${bestFlights.length}, other=${otherFlights.length}',
         );
       } else {
         final msg = 'Server error ${response.statusCode}';
@@ -350,22 +351,7 @@ class FlightController extends GetxController {
     log('[$label] $body');
   }
 
-  String _extractRawRoute(Map<String, dynamic> json, String key) {
-    try {
-      final airports = json['airports'] as List?;
-      if (airports == null || airports.isEmpty) return 'unknown';
-      final first = airports.first as Map?;
-      if (first == null) return 'unknown';
-      final list = first[key] as List?;
-      if (list == null || list.isEmpty) return 'unknown';
-      final entry = list.first as Map?;
-      final city = entry?['city'] ?? '';
-      final code = (entry?['airport'] as Map?)?['id'] ?? '';
-      return '$city ($code)';
-    } catch (_) {
-      return 'parse error';
-    }
-  }
+
 
   /// Replaces the date portion of a "yyyy-MM-dd HH:mm" string with
   /// [newDate] (also "yyyy-MM-dd"), keeping the original time-of-day.

@@ -14,16 +14,15 @@ import '../presentation/widget/flight_loading_indicator.dart';
 import '../presentation/widget/flight_route_header.dart';
 
 class FlightResultsScreen extends StatelessWidget {
-  const FlightResultsScreen({
+   FlightResultsScreen({
     super.key,
-    required this.departure,
-    required this.arrival,
-    required this.outboundDate,
+
+
   });
 
-  final Airport departure;
-  final Airport arrival;
-  final DateTime outboundDate;
+  final Airport departure = Get.arguments['departure'];
+  final Airport arrival = Get.arguments['arrival'];
+  final DateTime outboundDate = Get.arguments['date'];
 
   void _onFilterChanged(FlightController ctrl, int index) {
     ctrl.applyFilter(FlightFilter.values[index]);

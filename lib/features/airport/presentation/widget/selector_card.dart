@@ -1,4 +1,5 @@
 import 'package:flight_app/core/global/custom_text.dart';
+import 'package:flight_app/features/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -148,7 +149,7 @@ class SelectorCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   border: Border.all(color: AppColors.border),
                   borderRadius: BorderRadius.circular(14.r),
-                  color: Colors.white,
+                  color: AppColors.white,
                 ),
                 child: Row(
                   children: [
@@ -169,7 +170,7 @@ class SelectorCard extends StatelessWidget {
                         ),
                         CustomText(
                           text: date != null
-                              ? DateFormat('EEE, MMM d, yyyy').format(date)
+                              ? DateFormat('EEEE, MMM d, yyyy').format(date)
                               : 'Select date',
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w700,
@@ -239,7 +240,8 @@ class SelectorCard extends StatelessWidget {
     // Pass the selected date so it can be used to build
     // outbound_date in the search_parameters, e.g.:
     // "outbound_date": DateFormat('yyyy-MM-dd').format(date)
-    Get.to(
+    Get.toNamed(AppRoutes.flightResult, arguments: {'departure': dep, 'arrival': arr, 'date': date});
+   /* Get.to(
           () => FlightResultsScreen(
         departure: dep,
         arrival: arr,
@@ -247,6 +249,6 @@ class SelectorCard extends StatelessWidget {
       ),
       transition: Transition.rightToLeft,
       duration: const Duration(milliseconds: 300),
-    );
+    );*/
   }
 }

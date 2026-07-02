@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 
-import '../../../../core/constants/app_colors.dart';
+
 import '../../data/flight_data.dart';
-import 'airline_logo_badge.dart';
+
 import 'amenities_coloum.dart';
 
 
