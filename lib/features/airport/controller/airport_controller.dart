@@ -10,6 +10,12 @@ class AirportController extends GetxController {
   final isLoading = false.obs;
   final hasError = false.obs;
   final errorMessage = ''.obs;
+  // Add this observable alongside departureAirport / arrivalAirport
+  final Rx<DateTime?> departureDate = Rx<DateTime?>(null);
+
+  void setDepartureDate(DateTime date) => departureDate.value = date;
+
+  void clearDate() => departureDate.value = null;
 
   /// network caller represent the class of api calling structure
   /// it prevent repeated import and called http functions.

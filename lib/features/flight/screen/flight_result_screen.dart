@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 
 import 'package:get/get.dart';
 import '../../../core/constants/app_colors.dart';
@@ -17,13 +18,25 @@ class FlightResultsScreen extends StatelessWidget {
     super.key,
     required this.departure,
     required this.arrival,
+    required this.outboundDate,
   });
 
   final Airport departure;
   final Airport arrival;
+  final DateTime outboundDate;
 
   void _onFilterChanged(FlightController ctrl, int index) {
     ctrl.applyFilter(FlightFilter.values[index]);
+  }
+
+  String get _formattedDate => DateFormat('yyyy-MM-dd').format(outboundDate);
+
+  void _search(FlightController ctrl) {
+    ctrl.searchFlights(
+      departure: departure.code,
+      arrival: arrival.code,
+      outboundDate: _formattedDate,
+    );
   }
 
   @override
@@ -32,7 +45,7 @@ class FlightResultsScreen extends StatelessWidget {
 
     // Trigger search once after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ctrl.searchFlights(departure: departure.code, arrival: arrival.code);
+      _search(ctrl);
     });
 
     return Scaffold(
@@ -72,10 +85,7 @@ class FlightResultsScreen extends StatelessWidget {
           if (ctrl.hasError.value) {
             return FlightErrorView(
               message: ctrl.errorMessage.value,
-              onRetry: () => ctrl.searchFlights(
-                departure: departure.code,
-                arrival: arrival.code,
-              ),
+              onRetry: () => _search(ctrl),
             );
           }
           if (ctrl.hasSearched.value && ctrl.displayedFlights.isEmpty) {

@@ -29,6 +29,7 @@ class FlightController extends GetxController {
 
   String _lastDep = '';
   String _lastArr = '';
+  String _lastDate = '';
 
   final RxSet<int> expandedCardIndices = <int>{}.obs;
 
@@ -45,20 +46,34 @@ class FlightController extends GetxController {
   Future<void> searchFlights({
     required String departure,
     required String arrival,
-    String? date,
+    required String outboundDate, // format: yyyy-MM-dd
   }) async {
     _lastDep = departure;
     _lastArr = arrival;
+    _lastDate = outboundDate;
 
     isLoading.value = true;
     hasError.value = false;
     hasSearched.value = false;
     apiLogs.clear();
 
-    _addLog('REQUEST', 'GET ${AppUrl.flight}\nroute: $departure → $arrival');
+    final uri = Uri.parse(AppUrl.flight).replace(
+      queryParameters: {
+        ...Uri.parse(AppUrl.flight).queryParameters,
+        'departure_id': departure,
+        'arrival_id': arrival,
+        'outbound_date': outboundDate,
+        'currency': 'USD',
+      },
+    );
+
+    _addLog(
+      'REQUEST',
+      'GET $uri\nroute: $departure → $arrival\ndate: $outboundDate',
+    );
 
     try {
-      final response = await networkCaller.getRequest(AppUrl.flight);
+      final response = await networkCaller.getRequest(uri.toString());
 
       final rawResponse = response.responseData;
 
@@ -70,6 +85,7 @@ class FlightController extends GetxController {
         final generated = _generateFlightsForRoute(
           departure: departure,
           arrival: arrival,
+          date: outboundDate,
           seed: parsed,
         );
 
@@ -99,19 +115,30 @@ class FlightController extends GetxController {
     }
   }
 
+  /// Re-runs the last search (departure/arrival/date) — handy for retry buttons.
+  Future<void> retryLastSearch() async {
+    if (_lastDep.isEmpty || _lastArr.isEmpty || _lastDate.isEmpty) return;
+    await searchFlights(
+      departure: _lastDep,
+      arrival: _lastArr,
+      outboundDate: _lastDate,
+    );
+  }
+
   ({List<FlightResult> best, List<FlightResult> other})
   _generateFlightsForRoute({
     required String departure,
     required String arrival,
+    required String date,
     required FlightSearchResponse seed,
   }) {
-    final rng = math.Random(departure.hashCode ^ arrival.hashCode);
+    final rng = math.Random(departure.hashCode ^ arrival.hashCode ^ date.hashCode);
 
     final shuffledAirlines = List<AirlineInfo>.from(airlines)..shuffle(rng);
 
     final availableHubs =
-        hubs.where((h) => h.$1 != departure && h.$1 != arrival).toList()
-          ..shuffle(rng);
+    hubs.where((h) => h.$1 != departure && h.$1 != arrival).toList()
+      ..shuffle(rng);
 
     List<FlightResult> buildBatch(List<FlightResult> source, bool isBest) {
       return source.asMap().entries.map((entry) {
@@ -120,14 +147,17 @@ class FlightController extends GetxController {
         final airline = shuffledAirlines[i % shuffledAirlines.length];
         final isNonstop = seedFlt.flights.length == 1;
 
+        final depTime = _restampDate(seedFlt.departureTime, date);
+        final arrTime = _restampDate(seedFlt.arrivalTime, date);
+
         if (isNonstop) {
           return _buildNonstop(
             dep: departure,
             arr: arrival,
             airline: airline,
             flightNo: '${airline.code} ${100 + rng.nextInt(900)}',
-            depTime: seedFlt.departureTime,
-            arrTime: seedFlt.arrivalTime,
+            depTime: depTime,
+            arrTime: arrTime,
             duration: seedFlt.totalDuration,
             price: seedFlt.price,
             isBest: isBest,
@@ -143,6 +173,7 @@ class FlightController extends GetxController {
             flightNoA: '${airline.code} ${100 + rng.nextInt(900)}',
             flightNoB: '${airline.code} ${100 + rng.nextInt(900)}',
             seedFlt: seedFlt,
+            date: date,
             price: seedFlt.price,
             isBest: isBest,
           );
@@ -151,8 +182,8 @@ class FlightController extends GetxController {
     }
 
     return (
-      best: buildBatch(seed.bestFlights, true),
-      other: buildBatch(seed.otherFlights, false),
+    best: buildBatch(seed.bestFlights, true),
+    other: buildBatch(seed.otherFlights, false),
     );
   }
 
@@ -202,6 +233,7 @@ class FlightController extends GetxController {
     required String flightNoA,
     required String flightNoB,
     required FlightResult seedFlt,
+    required String date,
     required int price,
     required bool isBest,
   }) {
@@ -212,8 +244,8 @@ class FlightController extends GetxController {
         : 90;
     final legB = seedFlt.totalDuration - legA - layMin;
 
-    // Parse departure time from seedFlt and compute arrival times
-    final depTime = seedFlt.departureTime; // e.g. "2026-06-18 08:10"
+    // Use the user-selected date, keep the seed's time-of-day
+    final depTime = _restampDate(seedFlt.departureTime, date);
     final hubArrTime = _addMinutes(depTime, legA);
     final hubDepTime = _addMinutes(hubArrTime, layMin);
     final finalArr = _addMinutes(hubDepTime, legB);
@@ -335,19 +367,39 @@ class FlightController extends GetxController {
     }
   }
 
+  /// Replaces the date portion of a "yyyy-MM-dd HH:mm" string with
+  /// [newDate] (also "yyyy-MM-dd"), keeping the original time-of-day.
+  String _restampDate(String dateTime, String newDate) {
+    try {
+      final parts = dateTime.split(' ');
+      if (parts.length < 2) return dateTime;
+      return '$newDate ${parts[1]}';
+    } catch (_) {
+      return dateTime;
+    }
+  }
+
   /// Adds [minutes] to a datetime string like "2026-06-18 08:10"
-  /// and returns the same format.
+  /// and returns the same format. Rolls over to the next day if needed.
   String _addMinutes(String dateTime, int minutes) {
     try {
       final parts = dateTime.split(' ');
       if (parts.length < 2) return dateTime;
+      final datePart = parts[0];
       final timeParts = parts[1].split(':');
       final h = int.parse(timeParts[0]);
       final m = int.parse(timeParts[1]);
-      final total = h * 60 + m + minutes;
-      final newH = (total ~/ 60) % 24;
-      final newM = total % 60;
-      return '${parts[0]} ${newH.toString().padLeft(2, '0')}:${newM.toString().padLeft(2, '0')}';
+
+      final base = DateTime.parse(datePart);
+      final result = DateTime(base.year, base.month, base.day, h, m)
+          .add(Duration(minutes: minutes));
+
+      final y = result.year.toString().padLeft(4, '0');
+      final mo = result.month.toString().padLeft(2, '0');
+      final d = result.day.toString().padLeft(2, '0');
+      final newH = result.hour.toString().padLeft(2, '0');
+      final newM = result.minute.toString().padLeft(2, '0');
+      return '$y-$mo-$d $newH:$newM';
     } catch (_) {
       return dateTime;
     }

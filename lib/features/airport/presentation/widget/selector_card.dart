@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../flight/controller/flight_controller.dart';
 import '../../../flight/screen/flight_result_screen.dart';
@@ -28,6 +29,30 @@ class SelectorCard extends StatelessWidget {
       backgroundColor: Colors.transparent,
       builder: (_) => AirportPickerSheet(isDeparture: isDeparture),
     );
+  }
+
+  Future<void> _openDatePicker(BuildContext context) async {
+    final now = DateTime.now();
+    final initial = airportCtrl.departureDate.value ?? now;
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initial.isBefore(now) ? now : initial,
+      firstDate: now,
+      lastDate: now.add(const Duration(days: 365)),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+              primary: AppColors.primary,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null) {
+      airportCtrl.setDepartureDate(picked);
+    }
   }
 
   @override
@@ -111,12 +136,58 @@ class SelectorCard extends StatelessWidget {
             onTap: () => _openPicker(context, isDeparture: false),
             onClear: airportCtrl.clearArrival,
           ),
+          Gap(12.h),
+          // Departure Date
+          Obx(() {
+            final date = airportCtrl.departureDate.value;
+            return GestureDetector(
+              onTap: () => _openDatePicker(context),
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+                decoration: BoxDecoration(
+                  border: Border.all(color: AppColors.border),
+                  borderRadius: BorderRadius.circular(14.r),
+                  color: Colors.white,
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.calendar_month_rounded,
+                      size: 20.sp,
+                      color: AppColors.primary,
+                    ),
+                    Gap(10.w),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomText(
+                          text: 'DEPARTURE DATE',
+                          fontSize: 11.sp,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textSecondary,
+                        ),
+                        CustomText(
+                          text: date != null
+                              ? DateFormat('EEE, MMM d, yyyy').format(date)
+                              : 'Select date',
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }),
           Gap(16.h),
           // Search Button
           Obx(() {
             final canSearch =
                 airportCtrl.departureAirport.value != null &&
-                airportCtrl.arrivalAirport.value != null;
+                    airportCtrl.arrivalAirport.value != null &&
+                    airportCtrl.departureDate.value != null;
             return SizedBox(
               width: double.infinity,
               height: 52.h,
@@ -141,7 +212,6 @@ class SelectorCard extends StatelessWidget {
                     Gap(8.w),
                     CustomText(
                       text: 'Search Flights',
-
                       fontSize: 15.sp,
                       fontWeight: FontWeight.w700,
                       color: canSearch
@@ -161,12 +231,20 @@ class SelectorCard extends StatelessWidget {
   void _onSearch(BuildContext context) {
     final dep = airportCtrl.departureAirport.value;
     final arr = airportCtrl.arrivalAirport.value;
-    if (dep == null || arr == null) return;
+    final date = airportCtrl.departureDate.value;
+    if (dep == null || arr == null || date == null) return;
 
     flightCtrl.clearResults();
 
+    // Pass the selected date so it can be used to build
+    // outbound_date in the search_parameters, e.g.:
+    // "outbound_date": DateFormat('yyyy-MM-dd').format(date)
     Get.to(
-      () => FlightResultsScreen(departure: dep, arrival: arr),
+          () => FlightResultsScreen(
+        departure: dep,
+        arrival: arr,
+        outboundDate: date,
+      ),
       transition: Transition.rightToLeft,
       duration: const Duration(milliseconds: 300),
     );
